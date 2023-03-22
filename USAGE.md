@@ -40,13 +40,15 @@ composer composer-tools update
 
 ## Run tools
 
-Run the tools with `composer test` or each tool on its own:
+Run the tests with `composer test` or each tool on its own:
 
 ```shell
 composer phpcs
 composer phpstan
 composer phpunit
 ```
+
+To fix code style issues with phpcbf run `composer phpcbf`.
 
 ## Testing GitHub actions locally
 
