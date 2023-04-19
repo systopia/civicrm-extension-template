@@ -25,6 +25,8 @@ directory.
   * Adapt `civicrm-image-tags` to your needs. (At least the minimum and maximum supported versions should be used.) See https://hub.docker.com/r/michaelmcandrew/civicrm/tags for available tags (only drupal).
 * Adapt `php-versions` in `.github/workflows/phpstan.yml`
   * Recommendation: Earliest and latest supported minor version of each supported major version.
+* Rename `phpstan.neon.dist.template` to `* Rename `phpstan.neon.dist`.
+  * Replace the placeholder `{EXTENSION}`.
 * Copy (not rename) `phpstan.neon.template` to `phpstan.neon` (only used locally).
   * Replace the placeholder `{VENDOR_DIR}` to the path of the `vendor` directory of your CiviCRM installation.
   * The template is kept for others to create their own `phpstan.neon`.
