@@ -7,7 +7,6 @@ parameters:
 	excludePaths:
 		analyse:
 			- CRM/*/DAO/*
-			- CRM/*/Upgrader/Base.php
 			- tests/phpunit/bootstrap.php
 	scanFiles:
 		- {EXTENSION}.civix.php

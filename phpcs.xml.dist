@@ -9,7 +9,6 @@
     <file>tests</file>
 
     <exclude-pattern>/CRM/[^/]+/DAO/.*\.php$</exclude-pattern>
-    <exclude-pattern>/CRM/[^/]+/Upgrader/Base\.php$</exclude-pattern>
 
     <arg name="extensions" value="php"/>
     <arg name="cache" value=".phpcs.cache"/>
