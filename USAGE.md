@@ -32,7 +32,8 @@ directory.
   * The template is kept for others to create their own `phpstan.neon`.
 * Set the minimum supported CiviCRM version in `ci/composer.json`.
   * Add `civicrm/civicrm-packages` as requirement if required for phpstan in your extension. (`scanFiles` or `scanDirectories` in the phpstan configuration need to be adapted then.)
-  
+* If the extension has no APIv3 actions, drop `api` from the scanned directories in `phpstan.xml.dist` and `phpcs.xml.dist` (and remove the directory if existent).
+
 Now nstall the required dependencies (might be run later for updates as well):
 
 ```shell
