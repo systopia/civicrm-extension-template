@@ -16,7 +16,8 @@ conflicting requirements.)
 ## Installation
 
 Copy all files (including .gitignore, exluding this file) to the extension
-directory.
+directory. (Use [`civix`](https://docs.civicrm.org/dev/en/latest/extensions/civix/)
+to create a new one.)
 
 * Rename `tests/docker-compose.yml.template` to `tests/docker-compose.yml`.
   * Replace the placeholder `{EXTENSION}`.
