@@ -19,6 +19,8 @@ Copy all files (including .gitignore, exluding this file) to the extension
 directory. (Use [`civix`](https://docs.civicrm.org/dev/en/latest/extensions/civix/)
 to create a new one.)
 
+* Rename `composer.json.template` to `composer.json`.
+  * Replace the placeholder `{EXTENSION}`.
 * Rename `tests/docker-compose.yml.template` to `tests/docker-compose.yml`.
   * Replace the placeholder `{EXTENSION}`.
 * Rename `.github/workflows/phpunit.yml.template` to `.github/workflows/phpunit.yml`.

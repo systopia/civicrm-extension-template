@@ -1,4 +1,7 @@
 {
+    "name": "systopia/{EXT_NAME}",
+    "type": "civicrm-extension",
+    "license": "AGPL-3.0-or-later",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
