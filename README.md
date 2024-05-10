@@ -1,4 +1,4 @@
-# CiviCRM extension template
+# CiviCRM Extension Template
 
 This directory contains some files that can be used for CiviCRM extensions.
 

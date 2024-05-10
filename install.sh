@@ -214,7 +214,7 @@ EOD
   cd "$SCRIPT_DIR"
   # We use "read" in "installFile" so we cannot switch to a loop using "read".
   # shellcheck disable=SC2044
-  for file in $(find . -type f -not -name USAGE.md -not -name "$SCRIPT_NAME" -not -path "./.git/*" -not -name "*~"); do
+  for file in $(find . -type f -not -name README.md -not -name "$SCRIPT_NAME" -not -path "./.git/*" -not -name "*~"); do
     installFile "$file" "$extDir"
   done
 }
