@@ -1,7 +1,7 @@
 version: "3"
 services:
   civicrm:
-    image: michaelmcandrew/civicrm:${CIVICRM_IMAGE_TAG:-5-drupal-php8.1}
+    image: michaelmcandrew/civicrm:${CIVICRM_IMAGE_TAG:-5-drupal}
     environment:
       - PROJECT_NAME=test
       - BASE_URL=http://localhost
@@ -20,9 +20,9 @@ services:
       - SMTP_HOST=localhost
       - SMTP_MAILDOMAIN=example.org
     volumes:
-      - ../:/var/www/html/sites/default/files/civicrm/ext/{EXTENSION}:${BIND_VOLUME_PERMISSIONS:-ro}
-      - /var/www/html/sites/default/files/civicrm/ext/{EXTENSION}/vendor
-      - /var/www/html/sites/default/files/civicrm/ext/{EXTENSION}/tools/phpunit/vendor
+      - ../:/var/www/html/sites/default/files/civicrm/ext/{EXT_DIR_NAME}:${BIND_VOLUME_PERMISSIONS:-ro}
+      - /var/www/html/sites/default/files/civicrm/ext/{EXT_DIR_NAME}/vendor
+      - /var/www/html/sites/default/files/civicrm/ext/{EXT_DIR_NAME}/tools/phpunit/vendor
     # Don't start Apache HTTP Server, but keep container running
     command: ["tail", "-f", "/dev/null"]
     stop_signal: SIGKILL

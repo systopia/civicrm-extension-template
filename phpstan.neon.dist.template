@@ -4,18 +4,18 @@ parameters:
 		- Civi
 		- CRM
 		- tests
+		- {EXT_SHORT_NAME}.php
 	excludePaths:
 		analyse:
-			- CRM/*/DAO/*
+			- CRM/{EXT_UCFIRST_SHORT_NAME}/DAO/*
 			- tests/phpunit/bootstrap.php
 	scanFiles:
-		- {EXTENSION}.civix.php
+		- {EXT_SHORT_NAME}.civix.php
 		- tools/phpunit/vendor/bin/.phpunit/phpunit/src/Framework/TestCase.php
 	scanDirectories:
 		- tools/phpunit/vendor/bin/.phpunit/phpunit/src/Framework
 	bootstrapFiles:
 		- tools/phpunit/vendor/bin/.phpunit/phpunit/vendor/autoload.php
-		- vendor/autoload.php
 		- phpstanBootstrap.php
 	level: 9
 	universalObjectCratesClasses:
@@ -36,7 +36,7 @@ parameters:
 		# https://youtrack.jetbrains.com/issue/WI-63891/PHPStan-ignoreErrors-configuration-isnt-working-with-inspections
 
 		# Example
-		#- # Accessing results of API requests 
+		#- # Accessing results of API requests
 			#message: "#^Offset '[^']+' does not exist on array[^\\|]+\\|null.$#"
 			#path: */tests/phpunit/**/*Test.php
 	tmpDir: .phpstan

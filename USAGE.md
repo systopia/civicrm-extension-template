@@ -1,11 +1,11 @@
 # CiviCRM extension template
 
-This directory contains some files that can be used for new CiviCRM extensions.
+This directory contains some files that can be used for CiviCRM extensions.
 
 It provides configurations for
 [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer),
-[PHPStan](https://phpstan.org/), 
-and [PHPUnit](https://phpunit.de/) (via 
+[PHPStan](https://phpstan.org/),
+and [PHPUnit](https://phpunit.de/) (via
 [Symfony PHPUnit Bridge](https://symfony.com/doc/current/components/phpunit_bridge.html)).
 Additionally there are workflows to run this tools in GitHub actions. The
 worklows are configured to run on git push (might be changed).
@@ -15,40 +15,40 @@ conflicting requirements.)
 
 ## Installation
 
-Copy all files (including .gitignore, exluding this file) to the extension
-directory. (Use [`civix`](https://docs.civicrm.org/dev/en/latest/extensions/civix/)
-to create a new one.)
+To install/update the files from this template into an existing CiviCRM
+extension run:
 
-* Rename `composer.json.template` to `composer.json`.
-  * Replace the placeholder `{EXTENSION}`.
-* Rename `tests/docker-compose.yml.template` to `tests/docker-compose.yml`.
-  * Replace the placeholder `{EXTENSION}`.
-* Rename `.github/workflows/phpunit.yml.template` to `.github/workflows/phpunit.yml`.
-  * Replace the placeholder `{EXTENSION}`.
-  * Adapt `civicrm-image-tags` to your needs. (At least the minimum and maximum supported versions should be used.) See https://hub.docker.com/r/michaelmcandrew/civicrm/tags for available tags (only drupal).
-* Adapt `php-versions` in `.github/workflows/phpstan.yml`
-  * Recommendation: Earliest and latest supported minor version of each supported major version.
-* Rename `phpstan.neon.dist.template` to `* Rename `phpstan.neon.dist`.
-  * Replace the placeholder `{EXTENSION}`. (Use `_` instead of `-`.)
-* Copy (not rename) `phpstan.neon.template` to `phpstan.neon` (only used locally).
-  * Replace the placeholder `{VENDOR_DIR}` to the path of the `vendor` directory of your CiviCRM installation.
-  * The template is kept for others to create their own `phpstan.neon`.
-* Set the minimum supported CiviCRM version in `ci/composer.json`.
-  * Add `civicrm/civicrm-packages` as requirement if required for phpstan in your extension. (`scanFiles` or `scanDirectories` in the phpstan configuration need to be adapted then.)
-* If the extension has no APIv3 actions, drop `api` from the scanned directories in `phpstan.neon.dist` and `phpcs.xml.dist` (and remove the directory if existent).
-
-Now install the required dependencies (might be run later for updates as well):
-
-```shell
-composer update
-composer composer-tools update
+```sh
+./install.sh <extension directory>
 ```
 
-Note: If no requirement was added to `composer.json` at least the file
-`vendor/autoload.php` will be created which is referenced in the phpstan
-configuration. Alternatively the configuration can be adjusted to make the
-call of `composer update` obsolete. (The `vendor` directory is ignored via
-`.gitignore`.)
+This will copy all non template files (excluding this file and `install.sh`
+itself). To the extension directory. In files with the extension `.template`
+the placeholders will be replaced appropriately and the extension will be
+dropped. The file `phpstan.neon.template` won't be renamed but just copied.
+This file should be added to the repository instead of `phpstan.neon`. The
+latter one should be identical to `phpstan.neon.template`, but with the
+placeholder `{VENDOR_DIR}` replaced.
+
+If a file already exists you'll be asked how to proceed. So it is safe to run
+this script in any case. You might also want to run this script after a file of
+this template has been updated.
+
+After running `install.sh`:
+
+* Check `.github/workflows/phpunit.yml`.
+  * Adapt `civicrm-image-tags` to your needs. (At least the minimum and maximum supported versions should be used.) See https://hub.docker.com/r/michaelmcandrew/civicrm/tags for available tags (only drupal).
+  * The CiviCRM version used comes from the extension's `info.xml`. Ensure that the Docker image tag exists. (For more recent versions there's no php7.4 tag.)
+* Adapt `php-versions` in `.github/workflows/phpstan.yml`
+  * Recommendation: Earliest and latest supported minor version of each supported major version.
+* Add `civicrm/civicrm-packages` as requirement in `ci/composer.json` if required for phpstan in your extension. (`scanFiles` or `scanDirectories` in the phpstan configuration need to be adapted then.)
+* If the extension has no APIv3 actions, drop `api` from the scanned directories in `phpstan.neon.dist` and `phpcs.xml.dist` (and remove the directory if existent).
+
+Now install the different tools (might be run later for updates as well):
+
+```shell
+composer composer-tools update
+```
 
 ## Run tools
 
@@ -75,7 +75,7 @@ act -P ubuntu-latest=shivammathur/node:latest -j phpstan
 ```
 
 Because its not possible to use docker containers with `act` the phpunit
-action cannot be run via `act`. You might use `docker-composer` to do this
+action cannot be run via `act`. You might use `docker compose` to do this
 yourself.
 
 ## Usage in PhpStorm
@@ -99,7 +99,7 @@ available. This can be achieved by modifying the `run` part of the
 branch of an extension developed on GitHub the additional line would look like
 this:
 ```
-git clone --depth=1 https://github.com/{ORGANIZATION}/{OTHER}.git &&
+git clone --depth=1 https://github.com/{ORGANIZATION}/{OTHER}.git ../{OTHER} &&
 ```
 
 To test with different versions of the extension `${{ matrix.prefer }}` could
@@ -112,9 +112,8 @@ else
 fi &&
 ```
 
-* Add `{EXT_DIR}/{OTHER}/` to `scanDirectories` in `phpstan.neon.template` with `{OTHER}` replaced.
-* Add the above line also to `phpstan.neon` with `{EXT_DIR}` replaced, too.
-* Add `{OTHER}/` to `scanDirectories` in `phpstan.ci.neon`.
+* Add `../{OTHER}` to `scanDirectories` in `phpstan.neon.dist` with `{OTHER}`
+  replaced.
 
 Note: Depending on which code is used it might be enough to only scan a
 subfolder of the other extension e.g. `Civi`.

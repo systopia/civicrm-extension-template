@@ -1,11 +1,18 @@
 {
-    "name": "systopia/{EXT_NAME}",
+    "name": "systopia/{EXT_LONG_NAME}",
     "type": "civicrm-ext",
     "license": "AGPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "SYSTOPIA GmbH",
+            "email": "info@systopia.de",
+            "homepage": "https://www.systopia.de"
+        }
+    ],
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
-	"sort-packages": true
+        "sort-packages": true
     },
     "require": {
     },

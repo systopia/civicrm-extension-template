@@ -7,8 +7,9 @@
     <file>Civi</file>
     <file>CRM</file>
     <file>tests</file>
+    <file>{EXT_SHORT_NAME}.php</file>
 
-    <exclude-pattern>/CRM/[^/]+/DAO/.*\.php$</exclude-pattern>
+    <exclude-pattern>/CRM/{EXT_UCFIRST_SHORT_NAME}/DAO/.*\.php$</exclude-pattern>
 
     <arg name="extensions" value="php"/>
     <arg name="cache" value=".phpcs.cache"/>
@@ -19,6 +20,10 @@
     <config name="ignore_warnings_on_exit" value="true"/>
 
     <rule ref="tools/phpcs/vendor/drupal/coder/coder_sniffer/Drupal">
+        <!-- Conflicts with PHPStan type hints -->
+        <exclude name="Drupal.Commenting.VariableComment.IncorrectVarType"/>
+        <exclude name="Drupal.Commenting.FunctionComment.ParamTypeSpaces"/>
+
         <!-- Don't enforce phpdoc type hint because it (might) only duplicate a PHP type hint -->
         <exclude name="Drupal.Commenting.VariableComment.MissingVar"/>
 
