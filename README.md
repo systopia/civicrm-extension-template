@@ -34,6 +34,9 @@ If a file already exists you'll be asked how to proceed. So it is safe to run
 this script in any case. You might also want to run this script after a file of
 this template has been updated.
 
+(Hint: You might want to use the option `--update`. See script usage for
+details via `install.sh --help`.)
+
 After running `install.sh`:
 
 * Check `.github/workflows/phpunit.yml`.
@@ -84,7 +87,7 @@ PhpStorm allows only one phpcs and phpstan configuration per project. If you
 have a project with multiple CiviCRM extensions you might use the scripts in
 https://gitea.systopia.de/SYSTOPIA/SystopiaScripts/src/branch/master/phpstorm
 
-## Dependending on other CiviCRM extensions
+## Depending on other CiviCRM extensions
 
 If the CiviCRM extension depends on other extensions they have to be installed
 when running phpunit and also phpstan, if it directly uses code from another
@@ -112,8 +115,7 @@ else
 fi &&
 ```
 
-* Add `../{OTHER}` to `scanDirectories` in `phpstan.neon.dist` with `{OTHER}`
-  replaced.
+* Add `../{OTHER}` to `scanDirectories` in `phpstan.neon.dist`.
 
 Note: Depending on which code is used it might be enough to only scan a
 subfolder of the other extension e.g. `Civi`.

@@ -7,7 +7,7 @@ parameters:
 		- {EXT_SHORT_NAME}.php
 	excludePaths:
 		analyse:
-			- CRM/{EXT_UCFIRST_SHORT_NAME}/DAO/*
+			- CRM/{EXT_SHORT_NAME_CAMEL_CASE}/DAO/*
 			- tests/phpunit/bootstrap.php
 	scanFiles:
 		- {EXT_SHORT_NAME}.civix.php

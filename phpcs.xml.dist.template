@@ -9,7 +9,7 @@
     <file>tests</file>
     <file>{EXT_SHORT_NAME}.php</file>
 
-    <exclude-pattern>/CRM/{EXT_UCFIRST_SHORT_NAME}/DAO/.*\.php$</exclude-pattern>
+    <exclude-pattern>/CRM/{EXT_SHORT_NAME_CAMEL_CASE}/DAO/.*\.php$</exclude-pattern>
 
     <arg name="extensions" value="php"/>
     <arg name="cache" value=".phpcs.cache"/>

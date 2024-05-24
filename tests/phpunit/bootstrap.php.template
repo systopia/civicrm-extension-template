@@ -10,7 +10,7 @@ if (file_exists(__DIR__ . '/../../vendor/autoload.php')) {
   require_once __DIR__ . '/../../vendor/autoload.php';
 }
 
-// Make CRM_{EXT_UCFIRST_SHORT_NAME}_ExtensionUtil available.
+// Make CRM_{EXT_SHORT_NAME_CAMEL_CASE}_ExtensionUtil available.
 require_once __DIR__ . '/../../{EXT_SHORT_NAME}.civix.php';
 
 /*

@@ -10,7 +10,16 @@ readonly SCRIPT_DIR
 
 usage() {
   cat <<EOD
-Usage: $SCRIPT_NAME <extension dir>
+Usage: $SCRIPT_NAME [OPTION] <extension dir>
+  --skip-newer
+            Automatically skip file if the target is newer.
+  --touch-skipped
+            Touch manually skipped files, i.e. update modification date.
+  -u, --update
+            Enables --skip-newer and --touch-skipped.
+  -h, --help
+            Print this help.
+
 Installs/updates the files from the extension template into an existing
 CiviCRM extension. The placeholders in the .template files are replaced
 appropriately. In case a file already exists you'll be asked how to proceed.
@@ -37,15 +46,16 @@ readonly PHP
 SED=$(getCommand "sed")
 readonly SED
 
+MERGE=""
 GIT_MERGE_TOOL=$(git config --global merge.tool 2>&1 ||:)
 if [ -n "$GIT_MERGE_TOOL" ]; then
   MERGE=$(git config --global "mergetool.$GIT_MERGE_TOOL.path" || getCommand "$GIT_MERGE_TOOL")
-elif existsCommand meld; then
-  MERGE=$(getcommand meld)
 elif existsCommand kdiff3; then
   MERGE=$(getCommand kdiff3)
 elif existsCommand kompare; then
   MERGE=$(getCommand kompare)
+elif existsCommand meld; then
+  MERGE=$(getcommand meld)
 fi
 readonly MERGE
 
@@ -67,18 +77,25 @@ installFile() {
     local -r isTemplate=1
     local -r targetFileBasename=${sourceFileBasename%.*}
     local targetFile="$targetDir/$sourceDir/$targetFileBasename"
-    local -r tempFile=$(mktemp --tmpdir "testX.$targetFileBasename.XXXX")
+  else
+    local -r isTemplate=0
+    local targetFile="$targetDir/$sourceDir/$sourceFileBasename"
+  fi
+
+  if [ $SKIP_NEWER -eq 1 ] && [ -e "$targetFile" ] && [ "$targetFile" -nt "$sourceFile" ]; then
+    return 0
+  fi
+
+  if [ $isTemplate -eq 1 ]; then
+  local -r tempFile=$(mktemp --tmpdir "testX.$targetFileBasename.XXXX")
     "$SED" \
       -e "s/{EXT_DIR_NAME}/$EXT_DIR_NAME/g" \
       -e "s/{EXT_SHORT_NAME}/$EXT_SHORT_NAME/g" \
       -e "s/{EXT_LONG_NAME}/$EXT_LONG_NAME/g" \
       -e "s/{EXT_MIN_CIVICRM_VERSION}/$EXT_MIN_CIVICRM_VERSION/g" \
-      -e "s/{EXT_UCFIRST_SHORT_NAME}/$EXT_UCFIRST_SHORT_NAME/g" \
+      -e "s/{EXT_SHORT_NAME_CAMEL_CASE}/$EXT_SHORT_NAME_CAMEL_CASE/g" \
       "$sourceFile" >"$tempFile"
     sourceFile="$tempFile"
-  else
-    local -r isTemplate=0
-    local targetFile="$targetDir/$sourceDir/$sourceFileBasename"
   fi
 
   if [ -e "$targetFile" ]; then
@@ -102,7 +119,7 @@ installFile() {
     fi
 
     action=""
-    until [[ "$action" =~ [a-z] ]] && [[ "${availableActions[*]}" =~ ${action} ]]; do
+    until [[ "$action" =~ ^[a-z]$ ]] && [[ "${availableActions[*]}" =~ ${action} ]]; do
       cat <<EOD
 $targetFile already exists. What do you want to do?
   - Replace [r]
@@ -146,6 +163,10 @@ EOD
         mv "$targetFile" "$targetFile.backup"
       ;;
       s)
+        if [ $TOUCH_SKIPPED -eq 1 ]; then
+          touch "$targetFile"
+        fi
+
         if [ $isTemplate -eq 1 ]; then
           rm -f "$tempFile"
         fi
@@ -165,16 +186,6 @@ EOD
 }
 
 main() {
-  if [ ! $# = 1 ]; then
-    usage >&2
-    exit 1
-  fi
-
-  if [ "$1" = -h ] || [ "$1" == --help ]; then
-    usage
-    exit 0
-  fi
-
   if [ -z "$MERGE" ]; then
     cat <<EOD
 Merge is not available as option to resolve conflicts because neither meld,
@@ -183,11 +194,52 @@ kdiff3, nor kompare is installed.
 EOD
   fi
 
-  local extDir="$1"
-  if [ ! -d "$extDir" ]; then
-    eexit "$extDir is not a directory"
+  SKIP_NEWER=0
+  TOUCH_SKIPPED=0
+  local extDir=""
+
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --skip-newer)
+        SKIP_NEWER=1
+      ;;
+      --touch-skipped)
+        TOUCH_SKIPPED=1
+      ;;
+      -u|--update)
+        SKIP_NEWER=1
+        TOUCH_SKIPPED=1
+      ;;
+      -h|--help)
+        usage
+        exit 0
+      ;;
+      -*)
+        eexit "Invalid option $1"
+      ;;
+      *)
+        if [ -n "${extDir}" ]; then
+          eexit "Only one extension directory can be given"
+        fi
+
+        if [ ! -d "$1" ]; then
+          eexit "$1 is not a directory"
+        fi
+
+        extDir=$(realpath "$1")
+      ;;
+    esac
+
+    shift
+  done
+
+  readonly SKIP_NEWER
+  readonly TOUCH_SKIPPED
+
+  if [ -z "${extDir}" ]; then
+    usage
+    exit 1
   fi
-  extDir=$(realpath "$extDir")
 
   local -r infoXmlFile="$extDir/info.xml"
   if [ ! -f "$infoXmlFile" ] || [ ! -r "$infoXmlFile" ]; then
@@ -200,8 +252,8 @@ EOD
   readonly EXT_LONG_NAME
   EXT_SHORT_NAME=$(getXml "$infoXmlFile" file)
   readonly EXT_SHORT_NAME
-  EXT_UCFIRST_SHORT_NAME="${EXT_SHORT_NAME^}"
-  readonly EXT_UCFIRST_SHORT_NAME
+  EXT_SHORT_NAME_CAMEL_CASE=$("$SED" -r 's/(^|-|_)(\w)/\U\2/g' <<<"$EXT_SHORT_NAME")
+  readonly EXT_SHORT_NAME_CAMEL_CASE
   EXT_MIN_CIVICRM_VERSION=$(getXml "$infoXmlFile" compatibility/ver)
   readonly EXT_MIN_CIVICRM_VERSION
 

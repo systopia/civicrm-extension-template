@@ -23,7 +23,7 @@
       <directory suffix=".php">CRM</directory>
       <directory suffix=".php">Civi</directory>
       <exclude>
-        <directory>CRM/{EXT_UCFIRST_SHORT_NAME}/DAO</directory>
+        <directory>CRM/{EXT_SHORT_NAME_CAMEL_CASE}/DAO</directory>
       </exclude>
     </whitelist>
   </filter>
