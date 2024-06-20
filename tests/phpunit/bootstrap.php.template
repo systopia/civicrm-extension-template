@@ -38,8 +38,11 @@ eval(cv('php:boot --level=classloader', 'phpcode'));
 addExtensionDirToClassLoader(__DIR__);
 addExtensionToClassLoader('{EXT_DIR_NAME}');
 
-// Ensure function ts() is available - it's declared in the same file as CRM_Core_I18n.
-\CRM_Core_I18n::singleton();
+if (!function_exists('ts')) {
+  // Ensure function ts() is available - it's declared in the same file as CRM_Core_I18n in CiviCRM < 5.74.
+  // In later versions the function is registered following the composer conventions.
+  \CRM_Core_I18n::singleton();
+}
 
 /**
  * Modify DI container for tests.
