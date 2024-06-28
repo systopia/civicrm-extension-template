@@ -6,13 +6,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 ini_set('memory_limit', '2G');
 
-if (file_exists(__DIR__ . '/../../vendor/autoload.php')) {
-  require_once __DIR__ . '/../../vendor/autoload.php';
-}
-
-// Make CRM_{EXT_SHORT_NAME_CAMEL_CASE}_ExtensionUtil available.
-require_once __DIR__ . '/../../{EXT_SHORT_NAME}.civix.php';
-
 /*
  * The return value of this function call is used in the strftime()
  * implementation used in CiviCRM. If it is 'C' this results in this error:
@@ -31,6 +24,13 @@ if ('C' === setlocale(LC_TIME, '0')) {
 // phpcs:disable Drupal.Functions.DiscouragedFunctions.Discouraged
 eval(cv('php:boot --level=classloader', 'phpcode'));
 // phpcs:enable
+
+if (file_exists(__DIR__ . '/../../vendor/autoload.php')) {
+  require_once __DIR__ . '/../../vendor/autoload.php';
+}
+
+// Make CRM_{EXT_SHORT_NAME_CAMEL_CASE}_ExtensionUtil available.
+require_once __DIR__ . '/../../{EXT_SHORT_NAME}.civix.php';
 
 // phpcs:disable PSR1.Files.SideEffects
 
@@ -61,6 +61,10 @@ function addExtensionDirToClassLoader(string $extensionDir): void {
   $loader->add('api_', [$extensionDir]);
   $loader->addPsr4('api\\', [$extensionDir . '/api']);
   $loader->register();
+
+  if (file_exists($extensionDir . '/autoload.php')) {
+    require_once $extensionDir . '/autoload.php';
+  }
 }
 
 /**

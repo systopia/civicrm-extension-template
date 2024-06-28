@@ -46,8 +46,20 @@ After running `install.sh`:
   * Recommendation: Earliest and latest supported minor version of each supported major version.
 * Add `civicrm/civicrm-packages` as requirement in `ci/composer.json` if required for phpstan in your extension. (`scanFiles` or `scanDirectories` in the phpstan configuration need to be adapted then.)
 * If the extension has no APIv3 actions, drop `api` from the scanned directories in `phpstan.neon.dist` and `phpcs.xml.dist` (and remove the directory if existent).
+* Add optional directories like `managed` to `phpstan.neon.dist` and `phpcs.xml.dist` if used.
+* If you have (or plan to have) dependencies in the extension's `composer.json` add the following code to `{EXT_SHORT_NAME}.php`:
 
-Now install the different tools (might be run later for updates as well):
+  ```php
+  function _{EXT_SHORT_NAME}_composer_autoload(): void {
+    if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+        require_once __DIR__ . '/vendor/autoload.php';
+    }
+  }
+  ```
+
+  Call this function at the beginning of `{EXT_SHORT_NAME}_civicrm_config()` and `{EXT_SHORT_NAME}_civicrm_container()` (if used).
+
+Now install the different tools (might be run later for updates of the tools as well):
 
 ```shell
 composer composer-tools update

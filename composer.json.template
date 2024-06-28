@@ -12,6 +12,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
+        "prepend-autoloader": false,
         "sort-packages": true
     },
     "require": {
