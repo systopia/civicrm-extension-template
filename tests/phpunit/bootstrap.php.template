@@ -100,7 +100,7 @@ function cv(string $cmd, string $decode = 'json') {
   $result = stream_get_contents($pipes[1]);
   fclose($pipes[1]);
   if (proc_close($process) !== 0) {
-    throw new RuntimeException("Command failed ($cmd):\n$result");
+    throw new \RuntimeException("Command failed ($cmd):\n$result");
   }
   switch ($decode) {
     case 'raw':
@@ -109,7 +109,7 @@ function cv(string $cmd, string $decode = 'json') {
     case 'phpcode':
       // If the last output is /*PHPCODE*/, then we managed to complete execution.
       if (substr(trim($result), 0, 12) !== '/*BEGINPHP*/' || substr(trim($result), -10) !== '/*ENDPHP*/') {
-        throw new RuntimeException("Command failed ($cmd):\n$result");
+        throw new \RuntimeException("Command failed ($cmd):\n$result");
       }
       return $result;
 
@@ -117,6 +117,7 @@ function cv(string $cmd, string $decode = 'json') {
       return json_decode($result, TRUE);
 
     default:
-      throw new RuntimeException("Bad decoder format ($decode)");
+      throw new \RuntimeException("Bad decoder format ($decode)");
   }
 }
+
