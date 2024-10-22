@@ -55,7 +55,7 @@ elif existsCommand kdiff3; then
 elif existsCommand kompare; then
   MERGE=$(getCommand kompare)
 elif existsCommand meld; then
-  MERGE=$(getcommand meld)
+  MERGE=$(getCommand meld)
 fi
 readonly MERGE
 
