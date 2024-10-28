@@ -13,7 +13,7 @@ worklows are configured to run on git push (might be changed).
 (Note: The tools are installed in individual directories to avoid potential
 conflicting requirements.)
 
-## Installation
+## Installation template
 
 To install/update the files from this template into an existing CiviCRM
 extension run:
@@ -58,6 +58,8 @@ After running `install.sh`:
   ```
 
   Call this function at the beginning of `{EXT_SHORT_NAME}_civicrm_config()` and `{EXT_SHORT_NAME}_civicrm_container()` (if used).
+
+## Installation tools
 
 Now install the different tools (might be run later for updates of the tools as well):
 
