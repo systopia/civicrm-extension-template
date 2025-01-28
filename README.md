@@ -97,7 +97,7 @@ enabling them in the CI system (GitHub Actions).
 Recommended approach:
 
 1. Fix style violations automatically with `composer phpcbf`.
-1. Run `composer phpstan` and fix the remaining issues by hand.
+1. Run `composer phpcs` and fix the remaining issues by hand.
 1. If there are still too many issues to handle immediately:
    * [Ignore parts of
     files](https://github.com/PHPCSStandards/PHP_CodeSniffer/wiki/Advanced-Usage#ignoring-parts-of-a-file)
@@ -124,11 +124,11 @@ Recommended approach:
   	- phpstan-baseline.neon
    ```
 
-Consider to open an issue saying that errors in the baseline should be checked.
+Consider opening an issue saying that errors in the baseline should be checked.
 
 ## Dealing with errors
 
-If some tool reports an error or warning it has to be resolved!
+If any tool reports an error or warning it has to be resolved!
 
 In case it's a false positive or there exists no practicable way to resolve it,
 errors can be ignored.
