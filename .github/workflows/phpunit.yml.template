@@ -24,7 +24,7 @@ jobs:
       CIVICRM_IMAGE_TAG: ${{ matrix.civicrm-image-tags }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Pull images
       run: docker compose -f tests/docker-compose.yml pull --quiet
     - name: Start containers
