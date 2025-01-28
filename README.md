@@ -13,6 +13,8 @@ worklows are configured to run on git push (might be changed).
 (Note: The tools are installed in individual directories to avoid potential
 conflicting requirements.)
 
+Apart from that it contains the basic files to start a [documentation with MkDocs](#documentation-with-mkdocs).
+
 ## Installation template
 
 To install/update the files from this template into an existing CiviCRM
@@ -58,6 +60,9 @@ After running `install.sh`:
   ```
 
   Call this function at the beginning of `{EXT_SHORT_NAME}_civicrm_config()` and `{EXT_SHORT_NAME}_civicrm_container()` (if used).
+
+Additionally in some cases it makes sense to replace `README.md` with a symlink
+to `docs/index.md`. (Usually if both files would contain basically the same information.)
 
 ## Installation tools
 
@@ -148,3 +153,17 @@ which can be set at the beginning of the script.
 
 You might consider using the `matrix` and an environment variable in the GitHub
 workflow to run phpunit with different extension versions.
+
+## Documentation with MkDocs
+
+Basic files for a documentation with [MkDocs](https://www.mkdocs.org/) are
+installed by this template.
+
+When editing the documentation you can use `mkdocs` to verify the changes.
+Ensure you have `mkdocs` installed (`apt install mkdocs`). Then you can run
+`mkdocs serve` in the extension directory and open the URL printed on the
+console. Changes will be applied immediately to the served website.
+
+How to get the documentation up on [docs.civicrm.org](https://docs.civicrm.org/)
+is explained in the [developer
+guide](https://docs.civicrm.org/dev/en/latest/extensions/documentation/#submit).
