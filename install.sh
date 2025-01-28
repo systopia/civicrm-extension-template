@@ -94,6 +94,9 @@ installFile() {
       -e "s/{EXT_LONG_NAME}/$EXT_LONG_NAME/g" \
       -e "s/{EXT_MIN_CIVICRM_VERSION}/$EXT_MIN_CIVICRM_VERSION/g" \
       -e "s/{EXT_SHORT_NAME_CAMEL_CASE}/$EXT_SHORT_NAME_CAMEL_CASE/g" \
+      -e "s/{EXT_NAME}/$EXT_NAME/g" \
+      -e "s/{EXT_URL}/$EXT_URL/g" \
+      -e "s/{EXT_AUTHOR}/$EXT_AUTHOR/g" \
       "$sourceFile" >"$tempFile"
     sourceFile="$tempFile"
   fi
@@ -256,6 +259,13 @@ EOD
   readonly EXT_SHORT_NAME_CAMEL_CASE
   EXT_MIN_CIVICRM_VERSION=$(getXml "$infoXmlFile" compatibility/ver)
   readonly EXT_MIN_CIVICRM_VERSION
+
+  EXT_NAME=$(getXml "$infoXmlFile" name)
+  readonly EXT_NAME
+  EXT_URL=$(getXml "$infoXmlFile" urls/url)
+  readonly EXT_URL
+  EXT_AUTHOR=$(getXml "$infoXmlFile" maintainer/author)
+  readonly EXT_AUTHOR
 
   if [ "$EXT_DIR_NAME" != "$EXT_LONG_NAME" ]; then
     echo "Note: Extension directory name ($EXT_DIR_NAME) and extension long name ($EXT_LONG_NAME) differ"

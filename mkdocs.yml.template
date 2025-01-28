@@ -1,0 +1,27 @@
+site_name: {EXT_NAME}
+site_description: {EXT_DESCRIPTION}
+site_author: {EXT_AUTHOR}
+site_url: {EXT_URL}
+
+theme:
+  name: material
+
+nav:
+  - Introduction: index.md
+
+markdown_extensions:
+  - attr_list
+  - admonition
+  - def_list
+  - codehilite
+  - toc:
+      permalink: True
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.tilde
+  - pymdownx.betterem
+  - pymdownx.mark
+
+plugins:
+  - search:
+      lang: en
