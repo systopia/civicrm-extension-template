@@ -17,8 +17,9 @@ Apart from that it contains the basic files to start a [documentation with MkDoc
 
 ## Installation template
 
-To install/update the files from this template into an existing CiviCRM
-extension run:
+To install/update the files from this template into an existing or newly
+created CiviCRM extension first make sure that the `info.xml` is up to date.
+Then run:
 
 ```sh
 ./install.sh <extension directory>
@@ -83,6 +84,78 @@ composer phpunit
 ```
 
 To fix code style issues with phpcbf run `composer phpcbf`.
+
+## Recommendations for existing extensions
+
+If you add this template to an existing extension it might lead to many
+errors and  warnings that you cannot handle immediately. Here you can find
+some recommendations for that case. Make sure the tests run successfully before
+enabling them in the CI system (GitHub Actions).
+
+### Initial handling of code style violations
+
+Recommended approach:
+
+1. Fix style violations automatically with `composer phpcbf`.
+1. Run `composer phpcs` and fix the remaining issues by hand.
+1. If there are still too many issues to handle immediately:
+   * [Ignore parts of
+    files](https://github.com/PHPCSStandards/PHP_CodeSniffer/wiki/Advanced-Usage#ignoring-parts-of-a-file)
+    (be specific about ignored sniffs, if possible).
+    * Exclude files or directories from validation in `phpcs.xml.dist`.
+
+In general it should be shortly mentioned when validation is disabled for that
+reason.
+
+### Initial handling of phpstan errors
+
+Recommended approach:
+
+1. Run phpstan with the lowest level (`composer run -- phpstan --level=0`) and
+  fix the reported errors.
+1. Gradually increase the level and fix the reported errors until the
+  important issues are fixed or the number of messages is overwhelming.
+1. Create a [baseline](https://phpstan.org/user-guide/baseline) for the
+   remaining errors:
+   * Run `composer run -- phpstan --generate-baseline`.
+   * Include `phpstan-baseline.neon` in `phpstan.neon.dist`:
+   ```
+   includes:
+  	- phpstan-baseline.neon
+   ```
+
+Consider opening an issue saying that errors in the baseline should be checked.
+
+## Dealing with errors
+
+If any tool reports an error or warning it has to be resolved!
+
+In case it's a false positive or there exists no practicable way to resolve it,
+errors can be ignored.
+
+### Dealing with code style errors
+
+Errors reported by phpcs can be ignored with `// phpcs:ignore <sniffs>` above
+the problematic line. See [the
+manual](https://github.com/PHPCSStandards/PHP_CodeSniffer/wiki/Advanced-Usage#ignoring-parts-of-a-file)
+for more details. If you make use of `// phpcs:disable <sniffs>` always enable
+the sniffs again with `// phpcs:enable`. (Always state the ignored sniffs.)
+
+### Dealing with phpstan errors
+
+Errors reported by phpstan can be ignored with `// @phpstan-ignore <error
+identifiers>` above the problematic line. See [the
+manual](https://phpstan.org/user-guide/ignoring-errors) for more details.
+(Always state the ignored error identifiers and don't use
+`// @phpstan-ignore-next-line`.)
+
+Add an explanation if it's not obvious why an error is ignored.
+
+In some cases it might make sense to ignore errors in the `phpstan.neon.dist`
+[configuration
+file](https://phpstan.org/user-guide/ignoring-errors#ignoring-in-configuration-file).
+Though the ignored errors should always be as specific as possible, i.e. actual
+issues must never be covered that way.
 
 ## Testing GitHub actions locally
 
