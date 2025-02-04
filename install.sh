@@ -95,7 +95,7 @@ installFile() {
       -e "s/{EXT_MIN_CIVICRM_VERSION}/$EXT_MIN_CIVICRM_VERSION/g" \
       -e "s/{EXT_SHORT_NAME_CAMEL_CASE}/$EXT_SHORT_NAME_CAMEL_CASE/g" \
       -e "s/{EXT_NAME}/$EXT_NAME/g" \
-      -e "s/{EXT_URL}/$EXT_URL/g" \
+      -e "s@{EXT_URL}@$EXT_URL@g" \
       -e "s/{EXT_AUTHOR}/$EXT_AUTHOR/g" \
       "$sourceFile" >"$tempFile"
     sourceFile="$tempFile"
@@ -264,7 +264,8 @@ EOD
   readonly EXT_NAME
   EXT_URL=$(getXml "$infoXmlFile" urls/url)
   readonly EXT_URL
-  EXT_AUTHOR=$(getXml "$infoXmlFile" maintainer/author)
+  EXT_AUTHOR=$(getXml "$infoXmlFile" authors/author/name)
+  [ -n "$EXT_AUTHOR" ] || EXT_AUTHOR=$(getXml "$infoXmlFile" maintainer/author)
   readonly EXT_AUTHOR
 
   if [ "$EXT_DIR_NAME" != "$EXT_LONG_NAME" ]; then
