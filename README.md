@@ -17,6 +17,8 @@ Apart from that it contains the basic files to start a [documentation with MkDoc
 
 ## Installation template
 
+### Install from scratch
+
 To install/update the files from this template into an existing or newly
 created CiviCRM extension first make sure that the `info.xml` is up to date.
 Then run:
@@ -26,12 +28,16 @@ Then run:
 ```
 
 This will copy all non template files (excluding this file and `install.sh`
-itself). To the extension directory. In files with the extension `.template`
+itself) to the extension directory. In files with the extension `.template`
 the placeholders will be replaced appropriately and the extension will be
-dropped. The file `phpstan.neon.template` won't be renamed but just copied.
-This file should be added to the repository instead of `phpstan.neon`. The
-latter one should be identical to `phpstan.neon.template`, but with the
-placeholder `{VENDOR_DIR}` replaced.
+dropped.
+
+Only the file `phpstan.neon.template` won't be renamed but just copied:
+
+- copy `phpstan.neon.template` to `phpstan.neon`
+- in `phpstan.neon` replace the placeholder `{VENDOR_DIR}` with the Drupal vendor-path of a local civicrm-instance
+- add `phpstan.neon.template` to the repository
+- `phpstan.neon` depends on local setups and must not be commited to the repo.
 
 If a file already exists you'll be asked how to proceed. So it is safe to run
 this script in any case. You might also want to run this script after a file of
@@ -65,13 +71,34 @@ After running `install.sh`:
 Additionally in some cases it makes sense to replace `README.md` with a symlink
 to `docs/index.md`. (Usually if both files would contain basically the same information.)
 
-## Installation tools
+### Installation tools
 
 Now install the different tools (might be run later for updates of the tools as well):
 
 ```shell
 composer composer-tools update
 ```
+
+## Alternative: (Re)Activate after cloning repo
+
+If this template already exists in a freshly cloned repository, then the following steps are necessary in order to get the `composer-tools` running again:
+
+- copy `phpstan.neon.template` to `phpstan.neon`
+- in `phpstan.neon` replace the placeholder `{VENDOR_DIR}` with the Drupal vendor-path of a local civicrm-instance
+
+Install all project dependencies, that are listed in the repos `composer.json` file (if there are any). They are necessary for `phpstan` to resolve symbols of external library code: 
+
+```shell
+composer update
+```
+
+Install `composer-tools` in order to locally run `code-sniffer`, `phpstan` and `phpunit`.
+
+```shell
+composer composer-tools update
+```
+
+Make shure that in your local civicrm-instance, all those civicrm-extensions have been installed, that the current project is depending on (if there are any). Otherwise, `phpstan` will complain about missing symbols.
 
 ## Run tools
 
