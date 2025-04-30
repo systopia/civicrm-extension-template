@@ -22,6 +22,9 @@ parameters:
 		- Civi\Core\Event\GenericHookEvent
 		- CRM_Core_Config
 		- CRM_Core_DAO
+	earlyTerminatingMethodCalls:
+		CRM_Queue_Runner:
+		  - runAllViaWeb
 	checkTooWideReturnTypesInProtectedAndPublicMethods: true
 	checkUninitializedProperties: true
 	checkMissingCallableSignature: true
