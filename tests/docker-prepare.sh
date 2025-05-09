@@ -4,6 +4,9 @@ set -eu -o pipefail
 EXT_DIR=$(dirname "$(dirname "$(realpath "$0")")")
 EXT_NAME=$(basename "$EXT_DIR")
 
+# Prevent this git error: The repository does not have the correct ownership and git refuses to use it
+git config --global --add safe.directory "/var/www/html/sites/default/files/civicrm/ext/$EXT_NAME"
+
 i=0
 while ! mysql -h "$CIVICRM_DB_HOST" -P "$CIVICRM_DB_PORT" -u "$CIVICRM_DB_USER" --password="$CIVICRM_DB_PASS" -e 'SELECT 1;' >/dev/null 2>&1; do
   i=$((i+1))
