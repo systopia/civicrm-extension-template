@@ -56,6 +56,7 @@ After running `install.sh`:
 * Add `civicrm/civicrm-packages` as requirement in `ci/composer.json` if required for phpstan in your extension. (`scanFiles` or `scanDirectories` in the phpstan configuration need to be adapted then.)
 * If the extension has no APIv3 actions, drop `api` from the scanned directories in `phpstan.neon.dist` and `phpcs.xml.dist` (and remove the directory if existent).
 * Add optional directories like `managed` to `phpstan.neon.dist` and `phpcs.xml.dist` if used.
+* Set version constraint for PHP in `composer.json` (`composer require 'php:<constraint>'`).
 * If you have (or plan to have) dependencies in the extension's `composer.json` add the following code to `{EXT_SHORT_NAME}.php`:
 
   ```php
