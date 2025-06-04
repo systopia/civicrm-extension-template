@@ -17,7 +17,7 @@ Apart from that it contains the basic files to start a [documentation with MkDoc
 
 ## Installation template
 
-### Install from scratch
+### Install from scratch/update
 
 To install/update the files from this template into an existing or newly
 created CiviCRM extension first make sure that the `info.xml` is up to date.
@@ -85,21 +85,28 @@ composer composer-tools update
 If this template already exists in a freshly cloned repository, then the following steps are necessary in order to get the `composer-tools` running again:
 
 - copy `phpstan.neon.template` to `phpstan.neon`
-- in `phpstan.neon` replace the placeholder `{VENDOR_DIR}` with the Drupal vendor-path of a local civicrm-instance
+- in `phpstan.neon` replace the placeholder `{VENDOR_DIR}` with the Drupal
+  vendor-path of a local CiviCRM instance.
 
-Install all project dependencies, that are listed in the repos `composer.json` file (if there are any). They are necessary for `phpstan` to resolve symbols of external library code: 
+Install all project dependencies, that are listed in the repos `composer.json`
+file (if there are any) either in the extension directory or in the root
+`composer.json`. They are necessary for `phpstan` to resolve symbols of external
+library code:
 
 ```shell
-composer update
+composer update # or add requirements to root composer.json
 ```
 
-Install `composer-tools` in order to locally run `code-sniffer`, `phpstan` and `phpunit`.
+Install `composer-tools` in order to locally run `phpcs`, `phpcbf`, `phpstan`
+and `phpunit`.
 
 ```shell
 composer composer-tools update
 ```
 
-Make shure that in your local civicrm-instance, all those civicrm-extensions have been installed, that the current project is depending on (if there are any). Otherwise, `phpstan` will complain about missing symbols.
+Make sure that in your local CiviCRM instance, all those extensions have been
+installed, that the current project is depending on (if there are any).
+Otherwise, `phpstan` will complain about missing symbols.
 
 ## Run tools
 
@@ -111,7 +118,7 @@ composer phpstan
 composer phpunit
 ```
 
-To fix code style issues with phpcbf run `composer phpcbf`.
+To fix code style issues with `phpcbf` run `composer phpcbf`.
 
 ## Recommendations for existing extensions
 
@@ -201,6 +208,8 @@ Because its not possible to use docker containers with `act` the phpunit
 action cannot be run via `act`. You might use `docker compose` to do this
 yourself.
 
+`act` might be installed via [Homebrew](https://brew.sh/).
+
 ## Usage in PhpStorm
 
 PhpStorm allows only one phpcs and phpstan configuration per project. If you
@@ -268,3 +277,22 @@ console. Changes will be applied immediately to the served website.
 How to get the documentation up on [docs.civicrm.org](https://docs.civicrm.org/)
 is explained in the [developer
 guide](https://docs.civicrm.org/dev/en/latest/extensions/documentation/#submit).
+
+## Files to adapt if minimal PHP or CiviCRM version changes
+
+### Change of minimal PHP version
+
+The following files have to be adapted accordingly if the minimal PHP version
+changes:
+
+* `composer.json`
+* `.github/workflows/phpstan.yml`
+* `.github/workflows/phpunit.yml`
+
+### Change of minimal CiviCRM version
+
+The following files have to be adapted accordingly if the minimal CiviCRM
+version changes:
+
+* `ci/composer.json`
+* `.github/workflows/phpunit.yml`
