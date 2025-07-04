@@ -97,6 +97,7 @@ installFile() {
       -e "s/{EXT_NAME}/$EXT_NAME/g" \
       -e "s@{EXT_URL}@$EXT_URL@g" \
       -e "s/{EXT_AUTHOR}/$EXT_AUTHOR/g" \
+      -e "s/{EXT_DESCRIPTION}/${EXT_DESCRIPTION//\//\\\/}/g" \
       "$sourceFile" >"$tempFile"
     sourceFile="$tempFile"
   fi
@@ -264,6 +265,8 @@ EOD
   readonly EXT_NAME
   EXT_URL=$(getXml "$infoXmlFile" urls/url)
   readonly EXT_URL
+  EXT_DESCRIPTION=$(getXml "$infoXmlFile" description)
+  readonly EXT_DESCRIPTION
   EXT_AUTHOR=$(getXml "$infoXmlFile" authors/author/name)
   [ -n "$EXT_AUTHOR" ] || EXT_AUTHOR=$(getXml "$infoXmlFile" maintainer/author)
   readonly EXT_AUTHOR
