@@ -104,6 +104,7 @@ installFile() {
       -e "s/{EXT_AUTHOR}/$EXT_AUTHOR/g" \
       -e "s/{EXT_DESCRIPTION}/${EXT_DESCRIPTION//\//\\\/}/g" \
       "$sourceFile" >"$tempFile"
+    cp --attributes-only --preserve=mode "$sourceFile" "$tempFile"
     sourceFile="$tempFile"
   fi
 
@@ -190,7 +191,7 @@ EOD
   if [ $isTemplate -eq 1 ]; then
     mv "$tempFile" "$targetFile"
   else
-    cp "$sourceFile" "$targetFile"
+    cp --preserve=mode "$sourceFile" "$targetFile"
   fi
 }
 

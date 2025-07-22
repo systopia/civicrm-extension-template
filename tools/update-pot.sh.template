@@ -1,0 +1,43 @@
+#!/bin/bash
+
+set -euo pipefail
+
+readonly POSSIBLE_DIRS=(ang api Civi CRM js managed resources templates)
+
+readonly SCRIPT_PATH="$0"
+SCRIPT_NAME=$(basename "$SCRIPT_PATH")
+readonly SCRIPT_NAME
+SCRIPT_DIR=$(dirname "$SCRIPT_PATH")
+readonly SCRIPT_DIR
+
+usage() {
+  cat <<EOD
+Usage: $SCRIPT_NAME [-h|--help]
+  -h, --help
+            Print this help.
+
+Extracts translatable strings using civistrings and updates the .pot file.
+EOD
+}
+
+if [ $# -eq 1 ]; then
+  usage
+  if [ $1 = -h ] || [ $1 = --help ]; then
+    exit
+  fi
+  exit 1
+elif [ $# -gt 1 ]; then
+  usage
+  exit 1
+fi
+
+cd "$SCRIPT_DIR/.."
+
+actualDirs=()
+for path in "${POSSIBLE_DIRS[@]}"; do
+  if [ -e "$path" ]; then
+    actualDirs+=("$path")
+  fi
+done
+
+civistrings -o "l10n/{EXT_LONG_NAME}.pot" "${actualDirs[@]}" ./*.php
