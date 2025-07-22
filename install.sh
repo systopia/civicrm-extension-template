@@ -5,12 +5,12 @@ set -euo pipefail
 readonly SCRIPT_PATH="$0"
 SCRIPT_NAME=$(basename "$SCRIPT_PATH")
 readonly SCRIPT_NAME
-SCRIPT_DIR=$(dirname "$SCRIPT_PATH")
+SCRIPT_DIR=$(dirname "$(realpath "$SCRIPT_PATH")")
 readonly SCRIPT_DIR
 
 usage() {
   cat <<EOD
-Usage: $SCRIPT_NAME [OPTION] <extension dir>
+Usage: $SCRIPT_NAME [OPTION] <extension dir> [<file> ...]
   --skip-newer
             Automatically skip file if the target is newer.
   --touch-skipped
@@ -23,6 +23,11 @@ Usage: $SCRIPT_NAME [OPTION] <extension dir>
 Installs/updates the files from the extension template into an existing
 CiviCRM extension. The placeholders in the .template files are replaced
 appropriately. In case a file already exists you'll be asked how to proceed.
+
+The files to install/update can be limited by specifying the files as
+arguments. This can be done by using absolute paths to files in the extension
+template or by using paths relative to the directory of the extension template.
+The extension `template` can be omitted.
 EOD
 }
 
@@ -201,6 +206,8 @@ EOD
   SKIP_NEWER=0
   TOUCH_SKIPPED=0
   local extDir=""
+  local file=""
+  local files=()
 
   while [ $# -gt 0 ]; do
     case "$1" in
@@ -222,15 +229,27 @@ EOD
         eexit "Invalid option $1"
       ;;
       *)
-        if [ -n "${extDir}" ]; then
-          eexit "Only one extension directory can be given"
-        fi
+        if [ -z "${extDir}" ]; then
+          if [ ! -d "$1" ]; then
+            eexit "$1 is not a directory"
+          fi
 
-        if [ ! -d "$1" ]; then
-          eexit "$1 is not a directory"
-        fi
+          extDir=$(realpath "$1")
+        else
+          if [[ "$1" != /* ]]; then
+            file="$SCRIPT_DIR/$1"
+          else
+            file="$(realpath "$1")"
+          fi
+          if [ ! -f "$file" ] && [ -f "$file.template" ]; then
+            file+=.template
+          fi
+          if [ ! -f "$file" ] || [[ $file != $SCRIPT_DIR/* ]]; then
+            eexit "$1 is not a file in the extension template"
+          fi
 
-        extDir=$(realpath "$1")
+          files+=("${file:((${#SCRIPT_DIR}+1))}")
+        fi
       ;;
     esac
 
@@ -279,10 +298,16 @@ EOD
   # Change directory so we can use relative file names.
   cd "$SCRIPT_DIR"
   # We use "read" in "installFile" so we cannot switch to a loop using "read".
-  # shellcheck disable=SC2044
-  for file in $(find . -type f -not -name README.md -not -name "$SCRIPT_NAME" -not -path "./.git/*" -not -name "*~"); do
-    installFile "$file" "$extDir"
-  done
+  if [ ${#files[@]} -eq 0 ]; then
+    # shellcheck disable=SC2044
+    for file in $(find . -type f -not -name README.md -not -name "$SCRIPT_NAME" -not -path "./.git/*" -not -name "*~"); do
+      installFile "$file" "$extDir"
+    done
+  else
+    for file in "${files[@]}"; do
+      installFile "$file" "$extDir"
+    done
+  fi
 }
 
 main "$@"

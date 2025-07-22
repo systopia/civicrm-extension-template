@@ -24,13 +24,13 @@ created CiviCRM extension first make sure that the `info.xml` is up to date.
 Then run:
 
 ```sh
-./install.sh <extension directory>
+./install.sh <extension directory> [<file> ...]
 ```
 
 This will copy all non template files (excluding this file and `install.sh`
 itself) to the extension directory. In files with the extension `.template`
 the placeholders will be replaced appropriately and the extension will be
-dropped.
+dropped. If files are specified only those will be installed.
 
 Only the file `phpstan.neon.template` won't be renamed but just copied:
 
