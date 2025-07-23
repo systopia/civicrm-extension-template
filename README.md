@@ -15,6 +15,13 @@ conflicting requirements.)
 
 Apart from that it contains the basic files to start a [documentation with MkDocs](#documentation-with-mkdocs).
 
+In addition there are the following helper scripts:
+
+* [`tools/create-release.sh`](`tools/create-release.sh`) Helps to create a new release of the extension.
+* [`tools/update-pot.sh`](`tools/update-pot.sh`) Extracts translatable strings and updates the `.pot` file.
+
+See the help of the scripts for more details.
+
 ## Installation template
 
 ### Install from scratch/update
