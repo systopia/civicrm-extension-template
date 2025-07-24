@@ -31,7 +31,7 @@ created CiviCRM extension first make sure that the `info.xml` is up to date.
 Then run:
 
 ```sh
-./install.sh <extension directory> [<file> ...]
+./install.sh <extension directory> [<file or directory in extension template> ...]
 ```
 
 This will copy all non template files (excluding this file and `install.sh`
