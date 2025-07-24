@@ -311,6 +311,10 @@ EOD
         installFile "$file" "$extDir"
       done
   done
+
+  if [ -x "$extDir/tools/git/init-hooks.sh" ]; then
+    "$extDir/tools/git/init-hooks.sh"
+  fi
 }
 
 main "$@"

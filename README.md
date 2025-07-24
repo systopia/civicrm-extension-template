@@ -30,7 +30,7 @@ To install/update the files from this template into an existing or newly
 created CiviCRM extension first make sure that the `info.xml` is up to date.
 Then run:
 
-```sh
+```shell
 ./install.sh <extension directory> [<file or directory in extension template> ...]
 ```
 
@@ -52,6 +52,10 @@ this template has been updated.
 
 (Hint: You might want to use the option `--update`. See script usage for
 details via `install.sh --help`.)
+
+The script automatically executes
+[`tools/git/init-hooks.sh`](`tools/git/init-hooks.sh`) to initialize the git
+hooks.
 
 After running `install.sh`:
 
@@ -89,7 +93,16 @@ composer composer-tools update
 
 ## Alternative: (Re)Activate after cloning repo
 
-If this template already exists in a freshly cloned repository, then the following steps are necessary in order to get the `composer-tools` running again:
+If this template already exists in a freshly cloned repository, you need to
+initialize the git hooks and install the various tools.
+
+To initialize the git hooks execute
+```shell
+./tools/git/init-hooks.sh
+```
+
+The following steps are necessary in order to get the `composer-tools` running
+again:
 
 - copy `phpstan.neon.template` to `phpstan.neon`
 - in `phpstan.neon` replace the placeholder `{VENDOR_DIR}` with the Drupal
