@@ -9,6 +9,7 @@ on:
       - ci/composer.json
       - phpstan.ci.neon
       - phpstan.neon.dist
+      - .github/workflows/phpstan.yml
 
 jobs:
   phpstan:
