@@ -68,7 +68,8 @@ getXml() {
   local -r filename="$1"
   local -r xpathExpression="$2"
 
-  "$PHP" -r "\$simpleXml = simplexml_load_file('$filename'); echo (string) \$simpleXml->xpath('$xpathExpression')[0];"
+  # Multiple spaces as well as line breaks are replaced by a single space.
+  "$PHP" -r "\$simpleXml = simplexml_load_file('$filename'); echo preg_replace('/[\s]+/', ' ', (string) \$simpleXml->xpath('$xpathExpression')[0]);"
 }
 
 installFile() {
