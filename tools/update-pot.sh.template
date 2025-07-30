@@ -31,4 +31,5 @@ fi
 
 cd "$SCRIPT_DIR/.."
 
+[ -d l10n ] || mkdir l10n
 civistrings -o "l10n/{EXT_LONG_NAME}.pot" - < <(git ls-files)
