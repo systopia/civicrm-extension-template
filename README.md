@@ -22,6 +22,14 @@ In addition there are the following helper scripts:
 
 See the help of the scripts for more details.
 
+This template allows to add `civicrm/civicrm-core` as requirement to the
+`composer.json` to specify the minimum required CiviCRM version as well as other
+CiviCRM extensions that are available as composer package. This makes it
+possible to install a CiviCRM extension via `composer` with all its
+dependencies. When running `composer update` in the extension directory itself,
+the installation of `civicrm/civicrm-core` and CiviCRM extensions is
+[prevented](ComposerHelper.php.template).
+
 ## Installation template
 
 ### Install from scratch/update
@@ -236,7 +244,7 @@ PhpStorm allows only one phpcs and phpstan configuration per project. If you
 have a project with multiple CiviCRM extensions you might use the scripts in
 https://gitea.systopia.de/SYSTOPIA/SystopiaScripts/src/branch/master/phpstorm
 
-## Depending on other CiviCRM extensions
+## GitHub Actions: Depending on other CiviCRM extensions
 
 If the CiviCRM extension depends on other extensions they have to be installed
 when running phpunit and also phpstan, if it directly uses code from another
@@ -314,5 +322,6 @@ changes:
 The following files have to be adapted accordingly if the minimal CiviCRM
 version changes:
 
+* `composer.json`
 * `ci/composer.json`
 * `.github/workflows/phpunit.yml`
