@@ -19,9 +19,16 @@
         }
     },
     "require": {
-        "php": "^8.1"
+        "php": "^8.1",
+        "civicrm/civicrm-core": ">={EXT_MIN_CIVICRM_VERSION}"
+    },
+    "autoload": {
+        "classmap": ["ComposerHelper.php"]
     },
     "scripts": {
+        "pre-update-cmd": [
+            "{EXT_SHORT_NAME_CAMEL_CASE}\\ComposerHelper::preUpdate"
+        ],
         "composer-phpcs": [
             "@composer --working-dir=tools/phpcs"
         ],
