@@ -47,12 +47,7 @@ itself) to the extension directory. In files with the extension `.template`
 the placeholders will be replaced appropriately and the extension will be
 dropped. If files are specified only those will be installed.
 
-Only the file `phpstan.neon.template` won't be renamed but just copied:
-
-- copy `phpstan.neon.template` to `phpstan.neon`
-- in `phpstan.neon` replace the placeholder `{VENDOR_DIR}` with the Drupal vendor-path of a local civicrm-instance
-- add `phpstan.neon.template` to the repository
-- `phpstan.neon` depends on local setups and must not be commited to the repo.
+Only the file `phpstan.neon.template` won't be renamed, but just copied.
 
 If a file already exists you'll be asked how to proceed. So it is safe to run
 this script in any case. You might also want to run this script after a file of
@@ -67,16 +62,31 @@ hooks.
 
 After running `install.sh`:
 
+* Copy `phpstan.neon.template` to `phpstan.neon` and replace the placeholder
+  `{VENDOR_DIR}` with the vendor-path of the root composer project.
 * Check `.github/workflows/phpunit.yml`.
-  * Adapt `civicrm-image-tags` to your needs. (At least the minimum and maximum supported versions should be used.) See https://hub.docker.com/r/michaelmcandrew/civicrm/tags for available tags (only drupal).
-  * The CiviCRM version used comes from the extension's `info.xml`. Ensure that the Docker image tag exists. (For more recent versions there's no php7.4 tag.)
+  * Adapt `civicrm-image-tags` to your needs. (At least the minimum and maximum
+    supported versions should be used.) See
+    https://hub.docker.com/r/michaelmcandrew/civicrm/tags for available tags
+    (only drupal).
+  * The CiviCRM version used comes from the extension's `info.xml`. Ensure that
+    the Docker image tag exists. (For more recent versions there's no php7.4
+    tag.)
 * Adapt `php-versions` in `.github/workflows/phpstan.yml`
-  * Recommendation: Earliest and latest supported minor version of each supported major version.
-* Add `civicrm/civicrm-packages` as requirement in `ci/composer.json` if required for phpstan in your extension. (`scanFiles` or `scanDirectories` in the phpstan configuration need to be adapted then.)
-* If the extension has no APIv3 actions, drop `api` from the scanned directories in `phpstan.neon.dist` and `phpcs.xml.dist` (and remove the directory if existent).
-* Add optional directories like `managed` to `phpstan.neon.dist` and `phpcs.xml.dist` if used.
-* Set version constraint for PHP in `composer.json` (`composer require 'php:<constraint>'`).
-* If you have (or plan to have) dependencies in the extension's `composer.json` add the following code to `{EXT_SHORT_NAME}.php`:
+  * Recommendation: Earliest and latest supported minor version of each
+    supported major version.
+* Add `civicrm/civicrm-packages` as requirement in `ci/composer.json` if
+  required for phpstan in your extension. (`scanFiles` or `scanDirectories` in
+  the phpstan configuration need to be adapted then.)
+* If the extension has no APIv3 actions, drop `api` from the scanned directories
+  in `phpstan.neon.dist` and `phpcs.xml.dist` (and remove the directory if
+  existent).
+* Add optional directories like `ang` to `phpstan.neon.dist` and
+  `phpcs.xml.dist` if used. (Note: The directory `managed` should be added
+  usually only to `phpstan.neon.dist` because the code exported by CiviCRM
+  doesn't match all rules in `phpcs.xml.dist`.)
+* If you have (or plan to have) dependencies in the extension's `composer.json`
+  add the following code to `{EXT_SHORT_NAME}.php`:
 
   ```php
   function _{EXT_SHORT_NAME}_composer_autoload(): void {
@@ -86,7 +96,8 @@ After running `install.sh`:
   }
   ```
 
-  Call this function at the beginning of `{EXT_SHORT_NAME}_civicrm_config()` and `{EXT_SHORT_NAME}_civicrm_container()` (if used).
+  Call this function at the beginning of `{EXT_SHORT_NAME}_civicrm_config()` and
+  `{EXT_SHORT_NAME}_civicrm_container()` (if used).
 
 Additionally in some cases it makes sense to replace `README.md` with a symlink
 to `docs/index.md`. (Usually if both files would contain basically the same information.)
@@ -112,9 +123,8 @@ To initialize the git hooks execute
 The following steps are necessary in order to get the `composer-tools` running
 again:
 
-- copy `phpstan.neon.template` to `phpstan.neon`
-- in `phpstan.neon` replace the placeholder `{VENDOR_DIR}` with the Drupal
-  vendor-path of a local CiviCRM instance.
+* Copy `phpstan.neon.template` to `phpstan.neon` and replace the placeholder
+  `{VENDOR_DIR}` with the vendor-path of the root composer project.
 
 Install all project dependencies, that are listed in the repos `composer.json`
 file (if there are any) either in the extension directory or in the root
@@ -134,7 +144,7 @@ composer composer-tools update
 
 Make sure that in your local CiviCRM instance, all those extensions have been
 installed, that the current project is depending on (if there are any).
-Otherwise, `phpstan` will complain about missing symbols.
+Otherwise, `phpstan` may complain about missing symbols.
 
 ## Run tools
 
