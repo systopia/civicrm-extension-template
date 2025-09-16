@@ -1,7 +1,7 @@
 site_name: {EXT_NAME}
 site_description: {EXT_DESCRIPTION}
 site_author: {EXT_AUTHOR}
-site_url: {EXT_URL}
+repo_url: {EXT_URL}
 
 theme:
   name: material
@@ -15,7 +15,7 @@ markdown_extensions:
   - def_list
   - codehilite
   - toc:
-      permalink: True
+      permalink: true
   - pymdownx.superfences
   - pymdownx.inlinehilite
   - pymdownx.tilde
