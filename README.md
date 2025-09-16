@@ -78,20 +78,18 @@ After running `install.sh`:
 * Add `civicrm/civicrm-packages` as requirement in `ci/composer.json` if
   required for phpstan in your extension. (`scanFiles` or `scanDirectories` in
   the phpstan configuration need to be adapted then.)
-* If the extension has no APIv3 actions, drop `api` from the scanned directories
-  in `phpstan.neon.dist` and `phpcs.xml.dist` (and remove the directory if
-  existent).
-* Add optional directories like `ang` to `phpstan.neon.dist` and
-  `phpcs.xml.dist` if used. (Note: The directory `managed` should be added
-  usually only to `phpstan.neon.dist` because the code exported by CiviCRM
-  doesn't match all rules in `phpcs.xml.dist`.)
+* Adjust the directories to analyze in `phpstan.neon.dist` and `phpcs.xml.dist`.
+  * Remove directories if not existent, e.g. `api`.
+  * Add directories like `ang` if used. (Note: The directory `managed` usually
+    should be added only to `phpstan.neon.dist` because the code exported by
+    CiviCRM doesn't match all rules in `phpcs.xml.dist`.)
 * If you have (or plan to have) dependencies in the extension's `composer.json`
   add the following code to `{EXT_SHORT_NAME}.php`:
 
   ```php
   function _{EXT_SHORT_NAME}_composer_autoload(): void {
     if (file_exists(__DIR__ . '/vendor/autoload.php')) {
-        require_once __DIR__ . '/vendor/autoload.php';
+      require_once __DIR__ . '/vendor/autoload.php';
     }
   }
   ```
@@ -99,12 +97,14 @@ After running `install.sh`:
   Call this function at the beginning of `{EXT_SHORT_NAME}_civicrm_config()` and
   `{EXT_SHORT_NAME}_civicrm_container()` (if used).
 
-Additionally in some cases it makes sense to replace `README.md` with a symlink
-to `docs/index.md`. (Usually if both files would contain basically the same information.)
+Additionally, in some cases it makes sense to replace `README.md` with a symlink
+to `docs/index.md`. (Usually if both files would contain basically the same
+information.)
 
 ### Installation tools
 
-Now install the different tools (might be run later for updates of the tools as well):
+Now install the different tools (might be run later for updates of the tools as
+well):
 
 ```shell
 composer composer-tools update
@@ -289,7 +289,7 @@ subfolder of the other extension e.g. `Civi`.
 
 ### phpunit
 
-Use `cv ext:download` to install depending extensions in
+Use `cv ext:download` to install dependent extensions in
 `tests/docker-prepare.sh`. Add the required lines before the line containing
 `cv ext:enable`. Example:
 ```
