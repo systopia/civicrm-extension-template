@@ -62,6 +62,7 @@ hooks.
 
 After running `install.sh`:
 
+* Change the vendor name *systopia* in `composer.json` if necessary.
 * Copy `phpstan.neon.template` to `phpstan.neon` and replace the placeholder
   `{VENDOR_DIR}` with the vendor-path of the root composer project.
 * Check `.github/workflows/phpunit.yml`.
