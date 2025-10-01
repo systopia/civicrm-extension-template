@@ -2,6 +2,15 @@
 
 set -euo pipefail
 
+# Files that have been part of previous versions of the template.
+readonly DELETED_FILES=(
+  ci/README.md
+  ci/composer.json
+  tests/docker-compose.yml
+  tests/docker-phpunit.sh
+  tests/docker-prepare.sh
+)
+
 readonly SCRIPT_PATH="$0"
 SCRIPT_NAME=$(basename "$SCRIPT_PATH")
 readonly SCRIPT_NAME
@@ -27,7 +36,7 @@ appropriately. In case a file already exists you'll be asked how to proceed.
 The files to install/update can be limited by specifying the files and
 directories as arguments. This can be done by using absolute paths to
 files/directories in the extension template or by using paths relative to the
-directory of the extension template. The extension `.template` may be omitted.
+directory of the extension template. The extension ".template" may be omitted.
 EOD
 }
 
@@ -70,6 +79,10 @@ getXml() {
 
   # Multiple spaces as well as line breaks are replaced by a single space.
   "$PHP" -r "\$simpleXml = simplexml_load_file('$filename'); echo preg_replace('/[\s]+/', ' ', (string) \$simpleXml->xpath('$xpathExpression')[0]);"
+}
+
+isVersionLesser() {
+  "$PHP" -r "if (version_compare('$1', '$2', '>=')) exit(1);"
 }
 
 installFile() {
@@ -302,6 +315,13 @@ EOD
     echo
   fi
 
+  if isVersionLesser "$EXT_MIN_CIVICRM_VERSION" 5.76; then
+    echo "To run phpunit with GitHub Action at least CiviCRM 5.76 is required." >&2
+    echo "You should adapt the minimum supported CiviCRM version in info.xml." >&2
+    echo "Press Ctrl+C to cancel. Press enter to ignore this warning." >&2
+    read -r
+  fi
+
   # Change directory so we can use relative file names.
   cd "$SCRIPT_DIR"
 
@@ -316,6 +336,15 @@ EOD
   if [ -x "$extDir/tools/git/init-hooks.sh" ]; then
     "$extDir/tools/git/init-hooks.sh"
   fi
+
+  echo "Files have been installed."
+
+  for deletedFile in "${DELETED_FILES[@]}"; do
+    if [ -e "$extDir/$deletedFile" ]; then
+      echo "$deletedFile was installed by a prior version of the template and isn't used anymore." >&2
+      echo "You should consider deleting it." >&2
+    fi
+  done
 }
 
 main "$@"

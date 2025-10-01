@@ -20,7 +20,8 @@
     },
     "require": {
         "php": "^8.1",
-        "civicrm/civicrm-core": ">={EXT_MIN_CIVICRM_VERSION}"
+        "civicrm/civicrm-core": ">={EXT_MIN_CIVICRM_VERSION}",
+        "civicrm/civicrm-packages": ">={EXT_MIN_CIVICRM_VERSION}"
     },
     "autoload": {
         "classmap": ["ComposerHelper.php"]
