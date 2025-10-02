@@ -20,6 +20,7 @@ final class ComposerHelper {
         $package->getRequires(),
         fn (Link $require, string $name) =>
           'civicrm/civicrm-core' !== $name &&
+          'civicrm/civicrm-packages' !== $name &&
           'civicrm-ext' !== $repositoryManager->findPackage($name, $require->getConstraint())?->getType(),
         ARRAY_FILTER_USE_BOTH
       )

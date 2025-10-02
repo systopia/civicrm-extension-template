@@ -65,20 +65,12 @@ After running `install.sh`:
 * Change the vendor name *systopia* in `composer.json` if necessary.
 * Copy `phpstan.neon.template` to `phpstan.neon` and replace the placeholder
   `{VENDOR_DIR}` with the vendor-path of the root composer project.
-* Check `.github/workflows/phpunit.yml`.
-  * Adapt `civicrm-image-tags` to your needs. (At least the minimum and maximum
-    supported versions should be used.) See
-    https://hub.docker.com/r/michaelmcandrew/civicrm/tags for available tags
-    (only drupal).
-  * The CiviCRM version used comes from the extension's `info.xml`. Ensure that
-    the Docker image tag exists. (For more recent versions there's no php7.4
-    tag.)
 * Adapt `php-versions` in `.github/workflows/phpstan.yml`
   * Recommendation: Earliest and latest supported minor version of each
     supported major version.
-* Add `civicrm/civicrm-packages` as requirement in `ci/composer.json` if
-  required for phpstan in your extension. (`scanFiles` or `scanDirectories` in
-  the phpstan configuration need to be adapted then.)
+* If elements from `civicrm/civicrm-packages` are used in your extension,
+  `scanFiles` or `scanDirectories` in the phpstan configuration might need to be
+  adapted.
 * Adjust the directories to analyze in `phpstan.neon.dist` and `phpcs.xml.dist`.
   * Remove directories if not existent, e.g. `api`.
   * Add directories like `ang` if used. (Note: The directory `managed` usually
@@ -241,11 +233,22 @@ images:
 ```shell
 act -P ubuntu-latest=shivammathur/node:latest -j phpcs
 act -P ubuntu-latest=shivammathur/node:latest -j phpstan
+# Network "bridge" is necessary to start MySQL service in the container.
+# (act uses host network by default.)
+act -P ubuntu-latest=shivammathur/node:latest -j phpunit --network bridge
+```
+It is possible to limit the matrix like this:
+
+```shell
+act workflow_dispatch -P ubuntu-latest=shivammathur/node:latest -j phpstan --matrix php-versions:8.4 --matrix prefer:prefer-stable
 ```
 
-Because its not possible to use docker containers with `act` the phpunit
-action cannot be run via `act`. You might use `docker compose` to do this
-yourself.
+The phpunit workflow allows to specify a composer version constraint for CiviCRM
+in the `workflow_dispatch` trigger:
+
+```shell
+act workflow_dispatch -P ubuntu-latest=shivammathur/node:latest -j phpunit --network bridge --input civicrm-version="6.7.8"
+```
 
 `act` might be installed via [Homebrew](https://brew.sh/).
 
@@ -265,22 +268,22 @@ extension. The following describes how to handle that case. The placeholder
 ### phpstan
 
 When running as GitHub action the code of the other extension has to be
-available. This can be achieved by modifying the `run` part of the
-*Install dependencies* step in `.github/workflows/phpstan.yml`. To use the base
-branch of an extension developed on GitHub the additional line would look like
-this:
-```
-git clone --depth=1 https://github.com/{ORGANIZATION}/{OTHER}.git ../{OTHER} &&
+available. In the best case they can be installed via composer. Otherwise, the
+`run` part of the *Install dependencies* step in `.github/workflows/phpstan.yml`
+has to be modified accordingly. To use the base branch of an extension developed
+on GitHub the additional line would look like this:
+```shell
+git clone --depth=1 https://github.com/{ORGANIZATION}/{OTHER}.git ../{OTHER}
 ```
 
-To test with different versions of the extension `${{ matrix.prefer }}` could
-be checked:
-```
+To test with different versions when a dependent extension cannot be installed
+via composer `${{ matrix.prefer }}` could be checked:
+```shell
 if [ "${{ matrix.prefer }}" = "prefer-lowest" ]; then
   git clone ...
 else
   git clone ...
-fi &&
+fi
 ```
 
 * Add `../{OTHER}` to `scanDirectories` in `phpstan.neon.dist`.
@@ -290,18 +293,27 @@ subfolder of the other extension e.g. `Civi`.
 
 ### phpunit
 
-Use `cv ext:download` to install dependent extensions in
-`tests/docker-prepare.sh`. Add the required lines before the line containing
-`cv ext:enable`. Example:
-```
+It has to be ensured that dependent extensions are available in the `ext` folder
+when running phpunit. In the best case extensions can be installed via
+composer. Otherwise, the `run` part of the *Install dependencies* step in
+`.github/workflows/phpunit.yml` has to be modified accordingly. For example
+an extension can be fetched with `cv ext:download`:
+```shell
 cv ext:download "{OTHER}@https://github.com/{ORGANIZATION}/{OTHER}/releases/download/${OTHER}_VERSION/{OTHER}-${OTHER}_VERSION.zip"
 ```
 
-In this example the version is defined in the shell variable `{OTHER}_VERSION`
-which can be set at the beginning of the script.
+In this example the version is defined in the environment variable
+`{OTHER}_VERSION`.
 
-You might consider using the `matrix` and an environment variable in the GitHub
-workflow to run phpunit with different extension versions.
+To test with different versions when a dependent extension cannot be installed
+via composer `${{ matrix.prefer }}` could be checked:
+```shell
+if [ "${{ matrix.prefer }}" = "prefer-lowest" ]; then
+  {OTHER}_VERSION=1.0.0
+else
+  {OTHER}_VERSION=1.2.3
+fi
+```
 
 ## Documentation with MkDocs
 
@@ -324,7 +336,10 @@ guide](https://docs.civicrm.org/dev/en/latest/extensions/documentation/#submit).
 The following files have to be adapted accordingly if the minimal PHP version
 changes:
 
-* `composer.json`
+* `info.xml`:
+  [`<php_compatibility>`](https://docs.civicrm.org/dev/en/latest/extensions/info-xml/#php_compatibility)
+  (if used)
+* `composer.json`: `composer require --no-update php:^{VERSION}`
 * `.github/workflows/phpstan.yml`
 * `.github/workflows/phpunit.yml`
 
@@ -333,6 +348,14 @@ changes:
 The following files have to be adapted accordingly if the minimal CiviCRM
 version changes:
 
-* `composer.json`
-* `ci/composer.json`
+* `info.xml`: [`<compatiblity>`](https://docs.civicrm.org/dev/en/latest/extensions/info-xml/#compatibility)
+* `composer.json`:
+  `composer require --no-update civicrm/civicrm-core:>={VERSION} civicrm/civicrm-packages:>={VERSION}`
+
+## Files to adapt if a new version of PHP is released
+
+To test with the latest version of PHP the following files have to be adapted
+accordingly, if a new version of PHP (minor or major) is released:
+
+* `.github/workflows/phpstan.yml`
 * `.github/workflows/phpunit.yml`
