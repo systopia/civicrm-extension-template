@@ -46,12 +46,14 @@ jobs:
       env:
         COMPOSER_COMPILE: all
       run: |
+        composer config --no-plugins allow-plugins.civicrm/composer-compile-plugin false
+        composer config --no-plugins allow-plugins.civicrm/composer-downloads-plugin true
         composer config --no-plugins allow-plugins.composer/installers true
         composer config --no-plugins allow-plugins.cweagans/composer-patches true
         # Run with --no-scripts so ComposerHelper doesn't prevent installation
         # of civicrm packages.
-        composer update --no-scripts --no-progress --prefer-dist --${{ matrix.prefer }} --optimize-autoloader --ignore-platform-req=ext-gd
-        composer composer-phpunit -- update --no-progress --prefer-dist
+        composer update --no-scripts --no-progress --prefer-dist --${{ matrix.prefer }} --optimize-autoloader --ignore-platform-reqs
+        composer composer-phpunit -- update --no-progress --prefer-dist --optimize-autoloader
         composer composer-phpstan -- update --no-progress --prefer-dist --optimize-autoloader
 
     - name: Run PHPStan

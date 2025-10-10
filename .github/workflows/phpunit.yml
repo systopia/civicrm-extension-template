@@ -72,7 +72,7 @@ jobs:
         git config --global --add safe.directory "$PWD"
         EXT_DIR=$PWD
         EXT_COMPOSER_NAME=$(composer show --self --name-only)
-        composer composer-phpunit -- update --no-progress --prefer-dist
+        composer composer-phpunit -- update --no-progress --prefer-dist --optimize-autoloader
         cd ..
         git clone https://github.com/civicrm/civicrm-standalone.git
         cd civicrm-standalone
@@ -93,9 +93,12 @@ jobs:
 
     - name: Set up CiviCRM
       env:
-        # Comma-separated list of CiviCRM components to enable, e.g. CiviEvent,CiviContribute
-        # A single space is required to prevent any component to be enabled.
-        CIVICRM_COMPONENTS: " "
+        # Comma-separated list of CiviCRM components to enable, e.g.
+        # CiviEvent,CiviContribute. Components are mapped to extensions. If
+        # empty, all components are enabled. Enabling the dependent extensions
+        # should be actually triggered in the test class. Not enabling any
+        # component isn't possible.
+        CIVICRM_COMPONENTS: "CiviReport"
         DATABASE_URL: mysql://user:password@127.0.0.1:3306/civicrm?new_link=true
       run: |
         cd ../civicrm-standalone
