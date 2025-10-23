@@ -256,7 +256,7 @@ act workflow_dispatch -P ubuntu-latest=shivammathur/node:latest -j phpunit --net
 
 PhpStorm allows only one phpcs and phpstan configuration per project. If you
 have a project with multiple CiviCRM extensions you might use the scripts in
-https://gitea.systopia.de/SYSTOPIA/SystopiaScripts/src/branch/master/phpstorm
+https://github.com/systopia/phpstorm-scripts
 
 ## GitHub Actions: Depending on other CiviCRM extensions
 
