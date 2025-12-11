@@ -295,7 +295,7 @@ subfolder of the other extension e.g. `Civi`.
 
 It has to be ensured that dependent extensions are available in the `ext` folder
 when running phpunit. In the best case extensions can be installed via
-composer. Otherwise, the `run` part of the *Install dependencies* step in
+composer. Otherwise, the `run` part of the *Set up CiviCRM* step in
 `.github/workflows/phpunit.yml` has to be modified accordingly. For example
 an extension can be fetched with `cv ext:download`:
 ```shell
