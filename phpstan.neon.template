@@ -5,17 +5,17 @@ includes:
 	- phpstan.neon.dist
 
 parameters:
-	isStandalone: false
 	scanDirectories:
 		- {VENDOR_DIR}/civicrm/civicrm-core/CRM
 	bootstrapFiles:
 		- {VENDOR_DIR}/autoload.php
 
-# For standalone CiviCRM installations, comment out the above "parameters" section and use the following configuration:
+# For standalone CiviCRM installations and CiviCRM on WordPress installations
+# (that are not using `composer`), replace the parameters section above
+# with the following configuration:
 #
 #parameters:
-#	isStandalone: true
 #	scanDirectories:
-#		- {VENDOR_DIR}/../../CRM
+#		- {CIVICRM_DIR}/CRM
 #	bootstrapFiles:
-#		- {VENDOR_DIR}/../../vendor/autoload.php
+#		- {CIVICRM_DIR}/vendor/autoload.php

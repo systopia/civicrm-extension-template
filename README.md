@@ -64,9 +64,10 @@ After running `install.sh`:
 
 * Change the vendor name *systopia* in `composer.json` if necessary.
 * Copy `phpstan.neon.template` to `phpstan.neon` and replace the placeholder
-  `{VENDOR_DIR}` with the vendor-path of the root composer project. If you 
-  installed CiviCRM Standalone, make sure to use the alternative parameters 
-  section.
+  `{VENDOR_DIR}` with the vendor-path of the root composer project.
+  * If you installed CiviCRM Standalone or CiviCRM on WordPress, make sure 
+    to use the alternative parameters section and replace `{CIVICRM_DIR}` with
+    the path to the CiviCRM installation directory.
 * Adapt `php-versions` in `.github/workflows/phpstan.yml`
   * Recommendation: Earliest and latest supported minor version of each
     supported major version.

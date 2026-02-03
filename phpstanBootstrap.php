@@ -21,17 +21,20 @@ declare(strict_types = 1);
 /** @var \PHPStan\DependencyInjection\Container $container */
 /** @phpstan-var array<string> $bootstrapFiles */
 $bootstrapFiles = $container->getParameter('bootstrapFiles');
-$isStandalone = $container->getParameter('isStandalone');
 foreach ($bootstrapFiles as $bootstrapFile) {
   if (str_ends_with($bootstrapFile, 'vendor/autoload.php')) {
     $vendorDir = dirname($bootstrapFile);
+    // default installation as Drupal extension
     $civiCrmVendorDir = $vendorDir . '/civicrm';
     $civiCrmCoreDir = $civiCrmVendorDir . '/civicrm-core';
     $civiCrmPackagesDir = $civiCrmVendorDir . '/civicrm-packages';
-    if ($isStandalone) {
-      $civiCrmVendorDir = $vendorDir;
-      $civiCrmCoreDir = $civiCrmVendorDir . '/../../core';
+    // installation as WordPress plugin or standalone
+    if (!is_dir($civiCrmCoreDir) || !is_dir($civiCrmPackagesDir)) {
+      $civiCrmCoreDir = $vendorDir . '/..';
       $civiCrmPackagesDir = $civiCrmCoreDir . '/packages';
+    }
+    if (!is_dir($civiCrmCoreDir) || !is_dir($civiCrmPackagesDir)) {
+      continue;
     }
     if (file_exists($civiCrmCoreDir)) {
       set_include_path(get_include_path()
