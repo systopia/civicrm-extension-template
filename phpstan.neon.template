@@ -10,9 +10,8 @@ parameters:
 	bootstrapFiles:
 		- {VENDOR_DIR}/autoload.php
 
-# For standalone CiviCRM installations and CiviCRM on WordPress installations
-# (that are not using `composer`), replace the parameters section above
-# with the following configuration:
+# For installations without composer (e.g. as WordPress plugin),
+# replace the parameters section above with the following configuration:
 #
 #parameters:
 #	scanDirectories:

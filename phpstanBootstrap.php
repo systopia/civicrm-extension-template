@@ -24,11 +24,11 @@ $bootstrapFiles = $container->getParameter('bootstrapFiles');
 foreach ($bootstrapFiles as $bootstrapFile) {
   if (str_ends_with($bootstrapFile, 'vendor/autoload.php')) {
     $vendorDir = dirname($bootstrapFile);
-    // default installation as Drupal extension
+    // Installation via composer (e.g. as Drupal module)
     $civiCrmVendorDir = $vendorDir . '/civicrm';
     $civiCrmCoreDir = $civiCrmVendorDir . '/civicrm-core';
     $civiCrmPackagesDir = $civiCrmVendorDir . '/civicrm-packages';
-    // installation as WordPress plugin or standalone
+    // Installation without composer (e.g. as WordPress plugin)
     if (!is_dir($civiCrmCoreDir) || !is_dir($civiCrmPackagesDir)) {
       $civiCrmCoreDir = $vendorDir . '/..';
       $civiCrmPackagesDir = $civiCrmCoreDir . '/packages';
