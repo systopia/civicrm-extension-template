@@ -186,6 +186,9 @@ Recommended approach:
    * Run `composer run -- phpstan --generate-baseline`.
    * Include `phpstan-baseline.neon` in `phpstan.neon.dist`:
    ```
+   parameters:
+      ...
+   
    includes:
   	- phpstan-baseline.neon
    ```
