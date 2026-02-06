@@ -8,7 +8,7 @@ It provides configurations for
 and [PHPUnit](https://phpunit.de/) (via
 [Symfony PHPUnit Bridge](https://symfony.com/doc/current/components/phpunit_bridge.html)).
 Additionally there are workflows to run this tools in GitHub actions. The
-worklows are configured to run on git push (might be changed).
+workflows are configured to run on `git push` (might be changed).
 
 (Note: The tools are installed in individual directories to avoid potential
 conflicting requirements.)
@@ -65,6 +65,9 @@ After running `install.sh`:
 * Change the vendor name *systopia* in `composer.json` if necessary.
 * Copy `phpstan.neon.template` to `phpstan.neon` and replace the placeholder
   `{VENDOR_DIR}` with the vendor-path of the root composer project.
+  * If you installed CiviCRM without `composer` (e.g. as WordPress plugin), make 
+    sure to use the alternative parameters section and replace `{CIVICRM_DIR}`
+    with the path to the CiviCRM installation directory.
 * Adapt `php-versions` in `.github/workflows/phpstan.yml`
   * Recommendation: Earliest and latest supported minor version of each
     supported major version.
