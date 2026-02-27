@@ -246,8 +246,8 @@ It is possible to limit the matrix like this:
 act workflow_dispatch -P ubuntu-latest=shivammathur/node:latest -j phpstan --matrix php-versions:8.4 --matrix prefer:prefer-stable
 ```
 
-The phpunit workflow allows to specify a composer version constraint for CiviCRM
-in the `workflow_dispatch` trigger:
+The phpstan and phpunit workflows allow to specify a composer version
+constraint for CiviCRM in the `workflow_dispatch` trigger:
 
 ```shell
 act workflow_dispatch -P ubuntu-latest=shivammathur/node:latest -j phpunit --network bridge --input civicrm-version="6.7.8"
