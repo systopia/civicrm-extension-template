@@ -24,8 +24,8 @@ jobs:
   phpstan:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        fail-fast: false
         php-versions: ['8.1', '8.4']
         prefer: ['prefer-stable', 'prefer-lowest']
     name: PHPStan with PHP ${{ matrix.php-versions }} ${{ matrix.prefer }}
