@@ -67,7 +67,7 @@ jobs:
         composer config --no-plugins allow-plugins.cweagans/composer-patches true
 
         composer config --json "extra.installer-paths.$(dirname $PWD)/{\$name}" '["type:civicrm-ext"]'
-        composer require --ignore-platform-reqs composer/installers
+        composer require --ignore-platform-reqs --no-progress composer/installers
 
         if [ -n "${{ inputs.civicrm-version }}" ]; then
           composer require --no-update "civicrm/civicrm-core:${{ inputs.civicrm-version }}" \
@@ -76,9 +76,9 @@ jobs:
 
         # Run with --no-scripts so ComposerHelper doesn't prevent installation
         # of civicrm packages.
-        composer update --no-scripts --no-progress --prefer-dist --${{ matrix.prefer }} --optimize-autoloader --ignore-platform-reqs
-        composer composer-phpunit -- update --no-progress --prefer-dist --optimize-autoloader
-        composer composer-phpstan -- update --no-progress --prefer-dist --optimize-autoloader
+        composer update --no-scripts --no-progress --${{ matrix.prefer }} --optimize-autoloader --ignore-platform-reqs
+        composer composer-phpunit -- update --no-progress --optimize-autoloader
+        composer composer-phpstan -- update --no-progress --optimize-autoloader
 
     - name: Run PHPStan
       run: composer phpstan -- analyse -c phpstan.ci.neon
