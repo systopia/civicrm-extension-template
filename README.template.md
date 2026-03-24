@@ -83,7 +83,7 @@ However, a significant part of its development and ongoing maintenance happens o
 
 If you’d like to contribute financially, feel free to reach out via info@systopia.de to arrange a simple and suitable way.
 
-Your support helps keep this extension maintained, improved, and available to everyone.
+Your support helps keep this extension maintained, improved, and available to everyone. 
 
 ### Issues / Security
 
