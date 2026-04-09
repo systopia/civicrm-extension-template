@@ -92,7 +92,7 @@ Your support helps keep this extension maintained, improved, and available to ev
 
 ### Issues / Security
 
-Please report issues and security concerns [here](/issues).
+Please report issues and security concerns [here](../../issues).
 
 ### Contributions
 
