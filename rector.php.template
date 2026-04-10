@@ -15,10 +15,10 @@ return RectorConfig::configure()
       __DIR__ . '/Civi',
       __DIR__ . '/CRM',
       __DIR__ . '/{EXT_SHORT_NAME}.php',
-      //__DIR__ . '/tests',
+      __DIR__ . '/tests',
   ])
   ->withSkip([
-      __DIR__ . '/vendor',
+      __DIR__ . '*/vendor',
       __DIR__ . '/CRM/*/DAO',
       __DIR__ . '/CRM/*/DAO/*',
       __DIR__ . '/tools',
