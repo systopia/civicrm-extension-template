@@ -96,6 +96,6 @@ Your support helps keep this extension maintained, improved, and available to ev
 
 Please report issues and security concerns [here](../../issues).
 
-### Contributions
+### Contributing
 
-Contributions are welcome. Learn how to contribute [here](docs/contributions.md).
+Contributions are welcome. Learn how to contribute [here](docs/CONTRIBUTING.md).

@@ -22,6 +22,8 @@ There are many ways to contribute, not just code:
 
 ## Pull Requests
 
+- Read the [documentation](docs/index.md).
+- Consider using the [extension-template](https://github.com/systopia/civicrm-extension-template) we provide
 - Write clear, concise commit messages
 - Follow the existing code style and structure
 - Add tests where appropriate
@@ -35,6 +37,8 @@ If something feels off, incomplete, or missing, it probably is. Trust that insti
 
 ## Why it matters
 
-This project is actively maintained, but not fully funded. Contributions - whether code, feedback, or support - directly impact its quality, stability, and future.
+This project is actively maintained and used in production environments. It is not backed by a dedicated commercial funding model, so ongoing development depends in part on community contributions and support.
 
-If you rely on this extension, contributing back is the most effective way to keep it evolving.
+Contributions (whether code, feedback, or financial support) directly improve its quality, stability, and long-term sustainability.
+
+If you rely on this extension, consider contributing back or supporting its development financially. Just reach out via info@systopia.de to arrange a simple and suitable way.
