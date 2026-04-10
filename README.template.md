@@ -1,4 +1,4 @@
-<div style="text-align: center;">
+<div align="center">
 
 ![Systopia Logo](/docs/images/logo-systopia.webp)
 
@@ -6,7 +6,7 @@
 
 <div>&nbsp;</div>
 
-<div style="text-align: center;">
+<div align="center">
 
 ![Maintained-Status](https://img.shields.io/badge/Maintained-Actively-green.svg)
 [![Maintainer: Systopia](https://img.shields.io/badge/Maintainer-SYSTOPIA-blue.svg)](https://github.com/systopia)
@@ -14,7 +14,7 @@
 [![PRs: Welcome](https://img.shields.io/badge/PRs-Welcome-green.svg)](../../issues)
 
 Built for  
-<img src="/docs/images/logo-civicrm.webp"/>
+![Systopia Logo](/docs/images/logo-civicrm.webp)
 
 </div>
 
