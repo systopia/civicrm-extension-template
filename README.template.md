@@ -1,15 +1,17 @@
-<div align="center">
-<img src="/docs/images/logo-systopia.webp" alt="Systopia Logo"/>
+<div style="text-align: center;">
+
+![Systopia Logo](/docs/images/logo-systopia.webp)
+
 </div>
 
 <div>&nbsp;</div>
 
-<div align="center">
+<div style="text-align: center;">
 
-![Generic badge](https://img.shields.io/badge/Maintained-Actively-green.svg)
-[![Generic badge](https://img.shields.io/badge/Maintainer-SYSTOPIA-blue.svg)](https://github.com/systopia)
-[![Generic badge](https://img.shields.io/badge/License-AGPL%203.0-yellow.svg)](https://opensource.org/licenses/AGPL-3.0)
-[![Generic badge](https://img.shields.io/badge/PRs-Welcome-green.svg)](/issues)
+![Maintained-Status](https://img.shields.io/badge/Maintained-Actively-green.svg)
+[![Maintainer: Systopia](https://img.shields.io/badge/Maintainer-SYSTOPIA-blue.svg)](https://github.com/systopia)
+[![License: AGPL 3.0](https://img.shields.io/badge/License-AGPL%203.0-yellow.svg)](https://opensource.org/licenses/AGPL-3.0)
+[![PRs: Welcome](https://img.shields.io/badge/PRs-Welcome-green.svg)](../../issues)
 
 Built for  
 <img src="/docs/images/logo-civicrm.webp"/>
@@ -18,7 +20,7 @@ Built for
 
 
 
-# [TODO: EXTENSION.NAME] (e.g. Assumed Payments)
+# {EXT_NAME}
 
 [TODO: ONE SENTENCE]
 
@@ -68,14 +70,14 @@ Install by using `composer require systopia/civicrm-test-fixtures`
 
 ## Documentation
 
-For further information please consult the extensive [documentation](/docs/index.md).
+For further information please consult the [documentation](/docs/index.md).
 
 ## Status
 
 [TODO: KEEP ONLY ONE]
 
-[![Generic badge](https://img.shields.io/badge/Status-Actively%20Maintained-green.svg)](https://shields.io/)
-[![Generic badge](https://img.shields.io/badge/Status-Not%20Actively%20Maintained-red.svg)](https://shields.io/)
+![Actively Maintained](https://img.shields.io/badge/Status-Actively%20Maintained-green.svg)
+![not actively naintained](https://img.shields.io/badge/Status-Not%20Actively%20Maintained-red.svg)
 
 Production-ready and suitable for use in live environments.
 
