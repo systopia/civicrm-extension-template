@@ -8,7 +8,7 @@ It provides configurations for
 and [PHPUnit](https://phpunit.de/) (via
 [Symfony PHPUnit Bridge](https://symfony.com/doc/current/components/phpunit_bridge.html)).
 Additionally there are workflows to run this tools in GitHub actions. The
-worklows are configured to run on git push (might be changed).
+workflows are configured to run on `git push` (might be changed).
 
 (Note: The tools are installed in individual directories to avoid potential
 conflicting requirements.)
@@ -65,6 +65,9 @@ After running `install.sh`:
 * Change the vendor name *systopia* in `composer.json` if necessary.
 * Copy `phpstan.neon.template` to `phpstan.neon` and replace the placeholder
   `{VENDOR_DIR}` with the vendor-path of the root composer project.
+  * If you installed CiviCRM without `composer` (e.g. as WordPress plugin), make
+    sure to use the alternative parameters section and replace `{CIVICRM_DIR}`
+    with the path to the CiviCRM installation directory.
 * Adapt `php-versions` in `.github/workflows/phpstan.yml`
   * Recommendation: Earliest and latest supported minor version of each
     supported major version.
@@ -165,10 +168,10 @@ Recommended approach:
 1. Fix style violations automatically with `composer phpcbf`.
 1. Run `composer phpcs` and fix the remaining issues by hand.
 1. If there are still too many issues to handle immediately:
-   * [Ignore parts of
+  * [Ignore parts of
     files](https://github.com/PHPCSStandards/PHP_CodeSniffer/wiki/Advanced-Usage#ignoring-parts-of-a-file)
     (be specific about ignored sniffs, if possible).
-    * Exclude files or directories from validation in `phpcs.xml.dist`.
+  * Exclude files or directories from validation in `phpcs.xml.dist`.
 
 In general it should be shortly mentioned when validation is disabled for that
 reason.
@@ -178,17 +181,14 @@ reason.
 Recommended approach:
 
 1. Run phpstan with the lowest level (`composer run -- phpstan --level=0`) and
-  fix the reported errors.
+   fix the reported errors.
 1. Gradually increase the level and fix the reported errors until the
-  important issues are fixed or the number of messages is overwhelming.
+   important issues are fixed or the number of messages is overwhelming.
 1. Create a [baseline](https://phpstan.org/user-guide/baseline) for the
    remaining errors:
-   * Run `composer run -- phpstan --generate-baseline`.
-   * Include `phpstan-baseline.neon` in `phpstan.neon.dist`:
+  * Run `composer run -- phpstan --generate-baseline`.
+  * Include `phpstan-baseline.neon` in `phpstan.neon.dist`:
    ```
-   parameters:
-      ...
-   
    includes:
   	- phpstan-baseline.neon
    ```
@@ -246,8 +246,8 @@ It is possible to limit the matrix like this:
 act workflow_dispatch -P ubuntu-latest=shivammathur/node:latest -j phpstan --matrix php-versions:8.4 --matrix prefer:prefer-stable
 ```
 
-The phpunit workflow allows to specify a composer version constraint for CiviCRM
-in the `workflow_dispatch` trigger:
+The phpstan and phpunit workflows allow to specify a composer version
+constraint for CiviCRM in the `workflow_dispatch` trigger:
 
 ```shell
 act workflow_dispatch -P ubuntu-latest=shivammathur/node:latest -j phpunit --network bridge --input civicrm-version="6.7.8"
