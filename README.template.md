@@ -70,7 +70,7 @@ Install by using `composer require systopia/civicrm-test-fixtures`
 
 ## Documentation
 
-For further information please consult the [documentation](/docs/index.md).
+For further information please consult the [documentation](https://docs.civicrm.org/{EXT_SHORT_NAME}).
 
 ## Status
 
