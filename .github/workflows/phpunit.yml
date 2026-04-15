@@ -96,6 +96,9 @@ jobs:
             "civicrm/civicrm-packages:${{ inputs.civicrm-version }}"
         fi
 
+        # Install dev dependencies from extension's composer.json.
+        jq -r '.["require-dev"] | to_entries[] | "\"\(.key):\(.value)\""' "$EXT_DIR/composer.json" | xargs -r composer require --dev --no-update
+
         # --with-all-dependencies is required because downgrades from packages
         # installed before might be necessary.
         # \PEAR_ErrorStack::singleton() is static since pear/pear-core v1.10.16
