@@ -25,6 +25,8 @@ require_once __DIR__ . '/../../{EXT_SHORT_NAME}.civix.php';
 
 // Add test classes to class loader.
 addExtensionDirToClassLoader(__DIR__);
+
+// Add classes for tests without booted CiviCRM environment, i.e. simple PHPUnit tests.
 addExtensionToClassLoader('{EXT_DIR_NAME}');
 
 if (!function_exists('ts')) {
