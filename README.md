@@ -17,8 +17,8 @@ Apart from that it contains the basic files to start a [documentation with MkDoc
 
 In addition there are the following helper scripts:
 
-* [`tools/create-release.sh`](`tools/create-release.sh`) Helps to create a new release of the extension.
-* [`tools/update-pot.sh`](`tools/update-pot.sh`) Extracts translatable strings and updates the `.pot` file.
+* [`tools/create-release.sh`](tools/create-release.sh) Helps to create a new release of the extension.
+* [`tools/update-pot.sh`](tools/update-pot.sh.template) Extracts translatable strings and updates the `.pot` file.
 
 See the help of the scripts for more details.
 
@@ -57,7 +57,7 @@ this template has been updated.
 details via `install.sh --help`.)
 
 The script automatically executes
-[`tools/git/init-hooks.sh`](`tools/git/init-hooks.sh`) to initialize the git
+[`tools/git/init-hooks.sh`](tools/git/init-hooks.sh) to initialize the git
 hooks.
 
 After running `install.sh`:
