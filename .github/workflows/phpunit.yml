@@ -24,11 +24,17 @@ concurrency:
 jobs:
   phpunit:
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
       matrix:
-        php-versions: ['8.1', '8.4']
+        php-versions: ['8.1', '8.5']
         prefer: ['prefer-stable', 'prefer-lowest']
+        experimental: [false]
+        include:
+          - php-versions: 8.6
+            prefer: prefer-source
+            experimental: true
     name: PHPUnit with PHP ${{ matrix.php-versions }} ${{ matrix.prefer }}
 
     steps:
@@ -88,6 +94,15 @@ jobs:
           cd ..
           git clone https://github.com/civicrm/civicrm-standalone.git
           cd civicrm-standalone
+
+          if [ "${{ matrix.experimental }}" == "true" ]; then
+            sed -E -i composer.json \
+              -e 's/"minimum-stability":[^,]*/"minimum-stability": "dev"/' \
+              -e 's/"prefer-stable":[^,]*/"prefer-stable": false/'
+            # Ignore upper bound of php requirement to test with development
+            # version of PHP, even if not allowed by some composer.json.
+            export COMPOSER_IGNORE_PLATFORM_REQ="php+"
+          fi
 
           composer config --no-plugins allow-plugins.composer/installers true
           composer config --no-plugins allow-plugins.cweagans/composer-patches true
