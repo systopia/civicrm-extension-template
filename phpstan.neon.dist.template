@@ -25,6 +25,8 @@ parameters:
 		- CRM_Core_DAO
 		- civicrm_api3
 	earlyTerminatingMethodCalls:
+		CRM_Core_Error:
+			- statusBounce
 		CRM_Utils_System:
 			- civiExit
 			- redirect
