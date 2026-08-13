@@ -67,6 +67,7 @@ jobs:
         env:
           COMPOSER_COMPILE: all
           INPUTS_CIVICRM_VERSION: ${{ inputs.civicrm-version }}
+          MATRIX_EXPERIMENTAL: ${{ matrix.experimental }}
           MATRIX_PREFER: ${{ matrix.prefer }}
         run: |
           if [ "${MATRIX_PREFER}" = "prefer-lowest" ]; then
@@ -74,7 +75,7 @@ jobs:
             export COMPOSER_NO_SECURITY_BLOCKING=1
           fi
 
-          if [ "${{ matrix.experimental }}" == "true" ]; then
+          if [ "${MATRIX_EXPERIMENTAL}" == "true" ]; then
             sed -E -i composer.json \
               -e 's/"minimum-stability":[^,]*/"minimum-stability": "dev"/' \
               -e 's/"prefer-stable":[^,]*/"prefer-stable": false/'
