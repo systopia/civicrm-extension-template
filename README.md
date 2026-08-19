@@ -53,9 +53,6 @@ If a file already exists you'll be asked how to proceed. So it is safe to run
 this script in any case. You might also want to run this script after a file of
 this template has been updated.
 
-(Hint: You might want to use the option `--update`. See script usage for
-details via `install.sh --help`.)
-
 The script automatically executes
 [`tools/git/init-hooks.sh`](tools/git/init-hooks.sh) to initialize the git
 hooks.
@@ -65,9 +62,6 @@ After running `install.sh`:
 * Change the vendor name *systopia* in `composer.json` if necessary.
 * Copy `phpstan.neon.template` to `phpstan.neon` and replace the placeholder
   `{VENDOR_DIR}` with the vendor-path of the root composer project.
-  * If you installed CiviCRM without `composer` (e.g. as WordPress plugin), make 
-    sure to use the alternative parameters section and replace `{CIVICRM_DIR}`
-    with the path to the CiviCRM installation directory.
 * Adapt `php-versions` in `.github/workflows/phpstan.yml`
   * Recommendation: Earliest and latest supported minor version of each
     supported major version.
@@ -79,6 +73,8 @@ After running `install.sh`:
   * Add directories like `ang` if used. (Note: The directory `managed` usually
     should be added only to `phpstan.neon.dist` because the code exported by
     CiviCRM doesn't match all rules in `phpcs.xml.dist`.)
+* Remove unnecessary files, e.g. `mkdocs.yml` if no MkDocs documentation is
+  available (and not planned).
 * If you have (or plan to have) dependencies in the extension's `composer.json`
   add the following code to `{EXT_SHORT_NAME}.php`:
 
