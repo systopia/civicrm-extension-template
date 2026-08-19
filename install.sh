@@ -11,6 +11,8 @@ readonly DELETED_FILES=(
   tests/docker-prepare.sh
 )
 
+readonly FILE_REVISIONS_FILE=.template-file-revisions
+
 readonly SCRIPT_PATH="$0"
 SCRIPT_NAME=$(basename "$SCRIPT_PATH")
 readonly SCRIPT_NAME
@@ -20,12 +22,9 @@ readonly SCRIPT_DIR
 usage() {
   cat <<EOD
 Usage: $SCRIPT_NAME [OPTION] <extension dir> [<file_or_dir> ...]
-  --skip-newer
-            Automatically skip file if the target is newer.
-  --touch-skipped
-            Touch manually skipped files, i.e. update modification date.
-  -u, --update
-            Enables --skip-newer and --touch-skipped.
+  -f, --force
+            Force installation if the installed revision matches the revision
+            from the template or the file was removed.
   -h, --help
             Print this help.
 
@@ -37,12 +36,32 @@ The files to install/update can be limited by specifying the files and
 directories as arguments. This can be done by using absolute paths to
 files/directories in the extension template or by using paths relative to the
 directory of the extension template. The extension ".template" may be omitted.
+
+The revision of each file is stored in a file named "$FILE_REVISIONS_FILE".
+A file once installed won't be changed unless the revision changes or
+installation is forced. If a file gets removed, it won't be reinstalled unless
+installation is forced.
 EOD
 }
 
 eexit() {
   echo "$1" >&2
   exit 1
+}
+
+getGitFileRevision() {
+  local -r filename="$1"
+  local commitCount
+  local commitHash
+  commitCount=$(git rev-list --count main "$filename")
+  commitHash=$(git log -1 --format=%h "$filename")
+
+  echo "$commitCount+$commitHash"
+}
+
+saveFileRevisions() {
+  local -r extDir="$1"
+  declare -p TEMPLATE_FILE_REVISIONS >"$extDir/$FILE_REVISIONS_FILE"
 }
 
 getCommand() {
@@ -85,8 +104,11 @@ isVersionLesser() {
   "$PHP" -r "if (version_compare('$1', '$2', '>=')) exit(1);"
 }
 
+# Returns 200 if nothing has changed.
 installFile() {
-  local sourceFile="$1"
+  local -r sourceFile="$1"
+  # If the source file is a .template file contentFile is going to be overridden with a temp file.
+  local contentFile="$sourceFile"
   local -r sourceDir=$(dirname "$sourceFile")
   local -r targetDir="$2"
 
@@ -95,18 +117,47 @@ installFile() {
   if [ "$extension" = "template" ] && [ "$sourceFileBasename" != phpstan.neon.template ]; then
     local -r isTemplate=1
     local -r targetFileBasename=${sourceFileBasename%.*}
-    local targetFile="$targetDir/$sourceDir/$targetFileBasename"
+    local -r targetFile="$targetDir/$sourceDir/$targetFileBasename"
   else
     local -r isTemplate=0
-    local targetFile="$targetDir/$sourceDir/$sourceFileBasename"
+    local -r targetFile="$targetDir/$sourceDir/$sourceFileBasename"
   fi
+  local -r relativeTargetFile=$(realpath "$targetFile" --relative-to "$targetDir")
 
-  if [ $SKIP_NEWER -eq 1 ] && [ -e "$targetFile" ] && [ "$targetFile" -nt "$sourceFile" ]; then
-    return 0
+  local -r fileRevision=$(getGitFileRevision "$sourceFile")
+  if [[ -v TEMPLATE_FILE_REVISIONS[$sourceFile] ]]; then
+    if [ "${TEMPLATE_FILE_REVISIONS[$sourceFile]}" = "$fileRevision" ] && [ $FORCE -eq 0 ]; then
+      # File wasn't changed in template since last installation.
+      return 200
+    fi
+
+    if [ ! -e "$targetFile" ]; then
+      # File had been installed once, but was removed later.
+      if [ $FORCE -eq  0 ]; then
+        return 200
+      fi
+
+      echo "$relativeTargetFile had been installed once, but was removed later."
+      local answer=""
+      until [ "$answer" = "y" ] || [ "$answer" = "n" ]; do
+        echo -n "Do you want to install $relativeTargetFile again? [y/N] "
+        read -r answer
+        # lowercase.
+        answer=${answer,}
+        if [ -z "$answer" ]; then
+          answer="n"
+        fi
+      done
+      echo ""
+
+      if [ "$answer" = n ]; then
+        return 200
+      fi
+    fi
   fi
 
   if [ $isTemplate -eq 1 ]; then
-  local -r tempFile=$(mktemp --tmpdir "testX.$targetFileBasename.XXXX")
+    local -r tempFile=$(mktemp --tmpdir "testX.$targetFileBasename.XXXX")
     "$SED" \
       -e "s/{EXT_DIR_NAME}/$EXT_DIR_NAME/g" \
       -e "s/{EXT_SHORT_NAME}/$EXT_SHORT_NAME/g" \
@@ -119,25 +170,22 @@ installFile() {
       -e "s/{EXT_DESCRIPTION}/${EXT_DESCRIPTION//\//\\\/}/g" \
       "$sourceFile" >"$tempFile"
     cp --attributes-only --preserve=mode "$sourceFile" "$tempFile"
-    sourceFile="$tempFile"
+    contentFile="$tempFile"
   fi
 
   if [ -e "$targetFile" ]; then
-    if [ "$sourceFile" = "./tests/ignored-deprecations.json" ]; then
-      # Keep ignored-deprecations.json as it is.
-      return 0
-    fi
-
-    if [ -e "$sourceFile" ] && "$DIFF" -q "$sourceFile" "$targetFile" >/dev/null; then
+    if "$DIFF" -q "$contentFile" "$targetFile" >/dev/null; then
       # No difference.
       if [ $isTemplate -eq 1 ]; then
         rm -f "$tempFile"
       fi
 
+      TEMPLATE_FILE_REVISIONS[$sourceFile]=$fileRevision
+
       return 0
     fi
 
-    availableActions=("r" "n" "b" "d" "s")
+    availableActions=("r" "n" "b" "d" "i" "s")
     if [ -n "$MERGE" ]; then
       availableActions+=("m")
     fi
@@ -145,11 +193,12 @@ installFile() {
     action=""
     until [[ "$action" =~ ^[a-z]$ ]] && [[ "${availableActions[*]}" =~ ${action} ]]; do
       cat <<EOD
-$targetFile already exists. What do you want to do?
+$relativeTargetFile already exists. What do you want to do?
   - Replace [r]
   - Copy as new file (extension .new) [n]
   - Backup first (extension .backup) [b]
   - Show diff [d]
+  - Ignore [i]
   - Skip [s]
 EOD
       if [ -n "$MERGE" ]; then
@@ -161,11 +210,11 @@ EOD
       action=${action,}
 
       if [ "$action" = "d" ]; then
-        "$DIFF" -au "$sourceFile" "$targetFile" | less --quit-if-one-screen ||:
+        "$DIFF" -au "$contentFile" "$targetFile" | less --quit-if-one-screen ||:
         echo ""
         action=""
       elif [ "$action" = "m" ] && [ -n "$MERGE" ]; then
-        if ! "$MERGE" -o "$targetFile" "$sourceFile" "$targetFile" >/dev/null; then
+        if ! "$MERGE" -o "$targetFile" "$contentFile" "$targetFile" >/dev/null; then
           echo "Merge failed" >&2
           echo >&2
           action=""
@@ -173,6 +222,8 @@ EOD
           if [ $isTemplate -eq 1 ]; then
             rm -f "$tempFile"
           fi
+
+          TEMPLATE_FILE_REVISIONS[$sourceFile]=$fileRevision
 
           return 0
         fi
@@ -186,16 +237,20 @@ EOD
       b)
         mv "$targetFile" "$targetFile.backup"
       ;;
-      s)
-        if [ $TOUCH_SKIPPED -eq 1 ]; then
-          touch "$targetFile"
-        fi
-
+      i)
+        TEMPLATE_FILE_REVISIONS[$sourceFile]=$fileRevision
         if [ $isTemplate -eq 1 ]; then
           rm -f "$tempFile"
         fi
 
         return 0
+      ;;
+      s)
+        if [ $isTemplate -eq 1 ]; then
+          rm -f "$tempFile"
+        fi
+
+        return 200
       ;;
     esac
   fi
@@ -205,36 +260,31 @@ EOD
   if [ $isTemplate -eq 1 ]; then
     mv "$tempFile" "$targetFile"
   else
-    cp "$sourceFile" "$targetFile"
+    cp "$contentFile" "$targetFile"
   fi
+
+  TEMPLATE_FILE_REVISIONS[$sourceFile]=$fileRevision
 }
 
 main() {
   if [ -z "$MERGE" ]; then
     cat <<EOD
 Merge is not available as option to resolve conflicts because neither meld,
-kdiff3, nor kompare is installed.
+kdiff3, nor kompare is installed. It's highly recommended to install a merge
+tool!
 
 EOD
   fi
 
-  SKIP_NEWER=0
-  TOUCH_SKIPPED=0
+  FORCE=0
   local extDir=""
   local path=""
   local paths=()
 
   while [ $# -gt 0 ]; do
     case "$1" in
-      --skip-newer)
-        SKIP_NEWER=1
-      ;;
-      --touch-skipped)
-        TOUCH_SKIPPED=1
-      ;;
-      -u|--update)
-        SKIP_NEWER=1
-        TOUCH_SKIPPED=1
+      -f|--force)
+        FORCE=1
       ;;
       -h|--help)
         usage
@@ -263,17 +313,13 @@ EOD
             eexit "$1 is not a file or directory in the extension template"
           fi
 
-          # Strip $SCRIPT_DIR from the beginning of the path.
-          paths+=("${path:((${#SCRIPT_DIR}+1))}")
+          paths+=("$path")
         fi
       ;;
     esac
 
     shift
   done
-
-  readonly SKIP_NEWER
-  readonly TOUCH_SKIPPED
 
   if [ ${#paths[@]} -eq 0 ]; then
     paths=(.)
@@ -322,14 +368,28 @@ EOD
     read -r
   fi
 
+  declare -A TEMPLATE_FILE_REVISIONS
+  if [ -f "$extDir/$FILE_REVISIONS_FILE" ]; then
+    # Note: This cannot be done in a function (it would be available only in that function).
+    # shellcheck source=/dev/null
+    . "$extDir/$FILE_REVISIONS_FILE"
+  fi
+
   # Change directory so we can use relative file names.
   cd "$SCRIPT_DIR"
 
+  local file
   for path in "${paths[@]}"; do
       # We use "read" in "installFile" so we cannot switch to a loop using "read".
       # shellcheck disable=SC2044
       for file in $(find "$path" -type f -not -name README.md -not -name "$SCRIPT_NAME" -not -path "./.git/*" -not -name "*~" -not -name "*.orig"); do
-        installFile "$file" "$extDir"
+        # Normalize file name so we can use it to access values in $TEMPLATE_FILE_REVISIONS
+        file=$(realpath "$file" --relative-to "$SCRIPT_DIR")
+        if installFile "$file" "$extDir"; then
+          saveFileRevisions "$extDir"
+        elif [ $? -ne 200 ]; then
+          eexit "Installation of $file failed"
+        fi
       done
   done
 
