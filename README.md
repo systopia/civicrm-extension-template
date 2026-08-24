@@ -73,6 +73,12 @@ After running `install.sh`:
   * Add directories like `ang` if used. (Note: The directory `managed` usually
     should be added only to `phpstan.neon.dist` because the code exported by
     CiviCRM doesn't match all rules in `phpcs.xml.dist`.)
+* Specify optional extensions.
+  * If there are optional dependencies to other extensions you can specify those
+    extensions in `phpstan.neon.dist` at key `optionalExtensions` below
+    `civicrm`. If there are plain PHPUnit tests (i.e. without booted CiviCRM
+    environment) depending on those extensions you can add calls of function
+    `addExtensionToClassLoader()` to `tests/phpunit/bootstrap.php`.
 * Remove unnecessary files, e.g. `mkdocs.yml` if no MkDocs documentation is
   available (and not planned).
 * If you have (or plan to have) dependencies in the extension's `composer.json`
@@ -284,11 +290,6 @@ else
   git clone ...
 fi
 ```
-
-* Add `../{OTHER}` to `scanDirectories` in `phpstan.neon.dist`.
-
-Note: Depending on which code is used it might be enough to only scan a
-subfolder of the other extension e.g. `Civi`.
 
 ### phpunit
 

@@ -59,4 +59,6 @@ parameters:
 parametersSchema:
 	civicrm: structure([
 		implicitSmartyMethodsUsed: bool()
+		# Optional extensions (i.e. not required in info.xml) that should be added to class loader.
+		?optionalExtensions: listOf(string())
 	])
