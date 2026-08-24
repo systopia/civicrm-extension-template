@@ -122,7 +122,7 @@ installFile() {
     local -r isTemplate=0
     local -r targetFile="$targetDir/$sourceDir/$sourceFileBasename"
   fi
-  local -r relativeTargetFile=$(realpath "$targetFile" --relative-to "$targetDir")
+  local -r relativeTargetFile=$(realpath --relative-to "$targetDir" --no-symlinks "$targetFile")
 
   local -r fileRevision=$(getGitFileRevision "$sourceFile")
   if [[ -v TEMPLATE_FILE_REVISIONS[$sourceFile] ]]; then
@@ -185,7 +185,7 @@ installFile() {
       return 0
     fi
 
-    availableActions=("r" "n" "b" "d" "i" "s")
+    availableActions=("r" "b" "d" "i" "s")
     if [ -n "$MERGE" ]; then
       availableActions+=("m")
     fi
@@ -195,7 +195,6 @@ installFile() {
       cat <<EOD
 $relativeTargetFile already exists. What do you want to do?
   - Replace [r]
-  - Copy as new file (extension .new) [n]
   - Backup first (extension .backup) [b]
   - Show diff [d]
   - Ignore [i]
@@ -231,9 +230,6 @@ EOD
     done
 
     case "$action" in
-      n)
-        targetFile+=".new"
-      ;;
       b)
         mv "$targetFile" "$targetFile.backup"
       ;;
