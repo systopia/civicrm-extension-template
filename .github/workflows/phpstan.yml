@@ -72,7 +72,7 @@ jobs:
         run: |
           if [ "${MATRIX_PREFER}" = "prefer-lowest" ]; then
             # Actually test with lowest possible versions.
-            export COMPOSER_NO_SECURITY_BLOCKING=1
+            export COMPOSER_NO_BLOCKING=1
           fi
 
           if [ "${MATRIX_EXPERIMENTAL}" == "true" ]; then
