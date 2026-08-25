@@ -33,7 +33,7 @@ addExtensionDirToClassLoader($loader, __DIR__);
 addExtensionToClassLoader($loader, '{EXT_DIR_NAME}');
 $simpleXml = simplexml_load_file(__DIR__ . '/../../info.xml');
 foreach ($simpleXml->requires->ext ?? [] as $ext) {
-  addExtensionToClassLoader((string) $ext);
+  addExtensionToClassLoader($loader, (string) $ext);
 }
 
 if (!function_exists('ts')) {
@@ -74,7 +74,7 @@ function addExtensionToClassLoader(ClassLoader $loader, string $extension): void
   static $civicrmCoreDir;
   $civicrmCoreDir ??= cv('path -d "[civicrm.root]"')[0]['value'];
   if (is_dir("$civicrmCoreDir/ext/$extension")) {
-    addExtensionDirToClassLoader("$civicrmCoreDir/ext/$extension");
+    addExtensionDirToClassLoader($loader, "$civicrmCoreDir/ext/$extension");
 
     return;
   }
