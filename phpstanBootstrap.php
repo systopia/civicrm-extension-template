@@ -64,29 +64,26 @@ foreach ($bootstrapFiles as $bootstrapFile) {
       $loader->add('DB_', [$civiCrmPackagesDir]);
       $loader->add('HTML_', [$civiCrmPackagesDir]);
 
+      // Smarty aliasing is obsolete with CiviCRM 6.20.
+      // https://github.com/civicrm/civicrm-core/pull/36493
       // @phpstan-ignore-next-line
       if ($container->getParameter('civicrm')['implicitSmartyMethodsUsed']) {
         // In CiviCRM <=6.16 the class \Smarty extended by
         // \CRM_Core_SmartyCompatibility uses the __call() method to delegate
         // method calls to \Smarty\Smarty, but hasn't defined the methods itself
         // which results in method not found errors. By aliasing \Smarty\Smarty
-        // to \Smarty we avoid these errors.
+        // we avoid these errors.
         $smartyAutoloadFile = "$civiCrmPackagesDir/smarty5/vendor/autoload.php";
         if (file_exists($smartyAutoloadFile)) {
           require_once $smartyAutoloadFile;
-          // @phpstan-ignore class.notFound
-          class_alias(\Smarty\Smarty::class, 'Smarty');
+          class_alias(\Smarty\Smarty::class, \Smarty::class);
         }
         // Since CiviCRM 6.17 Smarty is installed as composer package.
         elseif (class_exists(\Smarty\Smarty::class)) {
-          // Since CiviCRM 6.18 the class delegating the method calls is
-          // \Civi\Smarty instead of \Smarty.
-          if (class_exists(\Civi\Smarty::class)) {
-            class_alias(\Smarty\Smarty::class, \Civi\Smarty::class);
-          }
-          else {
-            class_alias(\Smarty\Smarty::class, \Smarty::class);
-          }
+          // Before CiviCRM 6.18 the class delegating the method calls was \Smarty.
+          class_alias(\Smarty\Smarty::class, \Smarty::class);
+          // Since CiviCRM 6.18 the class delegating the method calls is \Civi\Smarty.
+          class_alias(\Smarty\Smarty::class, \Civi\Smarty::class);
         }
       }
       else {
