@@ -48,6 +48,9 @@ foreach ($bootstrapFiles as $bootstrapFile) {
         . PATH_SEPARATOR . $civiCrmPackagesDir
       );
 
+      // Required for class_exists checks to work.
+      require_once $bootstrapFile;
+
       require_once 'api/api.php';
       require_once 'api/v3/utils.php';
       require_once 'api/v3/Generic.php';
@@ -111,6 +114,10 @@ foreach ($bootstrapFiles as $bootstrapFile) {
     }
   }
 }
+
+// Ensure that type hint HTML_QuickForm_Element is recognized, though the class name is HTML_QuickForm_element.
+// Obsolete with CiviCRM 6.20 https://github.com/civicrm/civicrm-core/pull/36666
+class_exists('HTML_QuickForm_element');
 
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
   require_once __DIR__ . '/vendor/autoload.php';
