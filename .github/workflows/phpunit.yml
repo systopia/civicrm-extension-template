@@ -159,5 +159,7 @@ jobs:
         run: |
           export PATH="$(realpath ../civicrm-standalone/vendor/bin):$PATH"
           export CV_CONFIG="$HOME/.cv.json"
-          cd ../civicrm-standalone/ext/$(basename "$PWD")
+          # composer package name without vendor
+          EXT_COMPOSER_NAME=$(composer show --self --name-only | cut -d'/' -f2)
+          cd ../civicrm-standalone/ext/$EXT_COMPOSER_NAME
           composer phpunit
