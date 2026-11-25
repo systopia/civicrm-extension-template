@@ -130,11 +130,19 @@ function addExtensionToClassLoader(ClassLoader $loader, string $extension, strin
   static $currentWorkingDirParent;
   // @phpstan-ignore argument.type
   $currentWorkingDirParent ??= dirname(getenv('PWD'));
+
   $candidates = [
     "$currentWorkingDirParent/$extension",
     __DIR__ . "/../$extension",
     "$civiCrmCoreExtDir/$extension",
   ];
+
+  if (str_starts_with($extension, 'org.civicrm.')) {
+    // Core extensions use the extension short name as directory.
+    $extensionShortName = substr($extension, strlen('org.civicrm.'));
+    $candidates[] = "$civiCrmCoreExtDir/$extensionShortName";
+  }
+
   foreach ($candidates as $candidate) {
     if (is_dir($candidate)) {
       addExtensionDirToClassLoader($loader, $candidate);

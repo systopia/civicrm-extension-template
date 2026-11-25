@@ -79,6 +79,16 @@ function addExtensionToClassLoader(ClassLoader $loader, string $extension): void
     return;
   }
 
+  if (str_starts_with($extension, 'org.civicrm.')) {
+    // Core extensions use the extension short name as directory.
+    $extensionShortName = substr($extension, strlen('org.civicrm.'));
+    if (is_dir("$civicrmCoreDir/ext/$extensionShortName")) {
+      addExtensionDirToClassLoader($loader, "$civicrmCoreDir/ext/$extensionShortName");
+
+      return;
+    }
+  }
+
   throw new RuntimeException("Extension path not found for: $extension");
 }
 
